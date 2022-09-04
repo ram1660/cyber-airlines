@@ -12,15 +12,25 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AirplaneTicket from '@mui/icons-material/AirplaneTicket';
-import * as globals from './globals';
+import * as globals from '../../globals';
 import { Route, Link } from 'react-router-dom';
-import { css, jsx } from '@emotion/react'
-const pages = [{ description: 'Purchase a flight', url: '/search' }, { description: 'About', url: '/about' }];
-const settings = [{ description: 'Profile', url: '/profile' }, { description: 'My orders', url: '/orders' }, { description: 'Logout', url: 'logout' }];
 
-const NavBar = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+
+export default function NavBar() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+    // A context for knowing if to show to the user the logout button or not.
+    // Any other settings won't make any check if the user is logged in or not only the corresponding component from the route.
+    const isLoggedIn = React.useContext(globals.LoggedIn);
+
+    // Nav bar options.
+    const settings = [{ description: 'Profile', url: '/profile' }, { description: 'My orders', url: '/orders' }];
+    if (isLoggedIn === true) {
+        settings.push({ description: 'Logout', url: 'logout' });
+    } else {
+        settings.unshift({ description: 'Login', url: '/login'});
+    }
+    const pages = [{ description: 'Purchase a flight', url: '/search' }, { description: 'About', url: '/about' }];
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -156,12 +166,7 @@ const NavBar = () => {
                         >
                             {settings.map((setting) => (
                                 <MenuItem key={setting.description} onClick={handleCloseUserMenu}>
-                                    <Link css={css`
-                                        color: none;
-                                        
-                                    `} to={setting.url}>
-                                        <Typography textAlign="center">{setting.description}</Typography>
-                                    </Link>
+                                    <Typography textAlign="center">{setting.description}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -170,9 +175,7 @@ const NavBar = () => {
             </Container>
         </AppBar>
 
-            <Link to='/about'></Link>
         </>
 
     );
-};
-export default NavBar;
+}

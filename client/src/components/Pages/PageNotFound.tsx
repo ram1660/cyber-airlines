@@ -2,8 +2,10 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 export default function PageNotFound() {
     const redirect = useNavigate();
-    redirect('/home');
+    setTimeout(() => {
+        redirect('/home');
+    }, 5000);
   return (
-    <div>PageNotFound</div>
+    <div></div>
   )
 }
