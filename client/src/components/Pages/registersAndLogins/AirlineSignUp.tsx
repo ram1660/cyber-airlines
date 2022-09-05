@@ -15,7 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function AirLineSignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -41,7 +41,7 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Airline sign up
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -96,10 +96,15 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid container justifyContent="space-evenly">
+              <Grid item>
+                <Link href="/login/airline" variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
               <Grid item>
                 <Link href="/login" variant="body2">
-                  Already have an account? Sign in
+                  Are you a customer? Click here to sign in
                 </Link>
               </Grid>
             </Grid>

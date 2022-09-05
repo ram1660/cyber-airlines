@@ -6,6 +6,6 @@ export default function PageNotFound() {
         redirect('/home');
     }, 5000);
   return (
-    <div></div>
+    <div>Oops this page doesn't exists</div>
   )
 }

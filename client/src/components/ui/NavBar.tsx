@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AirplaneTicket from '@mui/icons-material/AirplaneTicket';
 import * as globals from '../../globals';
-import { Route, Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 
 export default function NavBar() {
@@ -26,9 +26,9 @@ export default function NavBar() {
     // Nav bar options.
     const settings = [{ description: 'Profile', url: '/profile' }, { description: 'My orders', url: '/orders' }];
     if (isLoggedIn === true) {
-        settings.push({ description: 'Logout', url: 'logout' });
+        settings.push({ description: 'Logout', url: '/logout' });
     } else {
-        settings.unshift({ description: 'Login', url: '/login'});
+        settings.unshift({ description: 'Login', url: '/login' }, { description: 'Airline login', url: 'login/airline'});
     }
     const pages = [{ description: 'Purchase a flight', url: '/search' }, { description: 'About', url: '/about' }];
 
@@ -101,10 +101,7 @@ export default function NavBar() {
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page.description} onClick={handleCloseNavMenu}>
-                                    <Link to={page.url}>
-                                        <Typography textAlign="center">{page.description}</Typography>
-                                    </Link>
-
+                                    <Typography textAlign="center">{page.description}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -130,15 +127,14 @@ export default function NavBar() {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                            <Link to={page.url}>
-                                <Button
-                                    key={page.description}
-                                    onClick={handleCloseNavMenu}
-                                    sx={{ my: 2, color: 'white', display: 'block' }}
-                                >
-                                    {page.description}
-                                </Button>
-                            </Link>
+                            <Button
+                                key={page.description}
+                                onClick={handleCloseNavMenu}
+                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                component={RouterLink} to={page.url}
+                            >
+                                {page.description}
+                            </Button>
                         ))}
                     </Box>
 
@@ -165,8 +161,8 @@ export default function NavBar() {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting.description} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting.description}</Typography>
+                                <MenuItem key={setting.description} onClick={handleCloseUserMenu} component={RouterLink} to={setting.url}>
+                                        <Typography textAlign="center">{setting.description}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>

@@ -12,29 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-  MemoryRouter,
-  Router,
-} from 'react-router-dom';
-import { StaticRouter } from 'react-router-dom/server';
+import { Link as RouterLink } from 'react-router-dom';
 const theme = createTheme();
 
-// const LinkBehavior = React.forwardRef<any, Omit<RouterLinkProps, 'to'>>(
-//   (props, ref) => <RouterLink ref={ref} to="/" {...props} role={undefined} />,
-// );
-
-// function Router(props: { children?: React.ReactNode }) {
-//   const { children } = props;
-//   if (typeof window === 'undefined') {
-//     return <StaticRouter location="/">{children}</StaticRouter>;
-//   }
-
-//   return <MemoryRouter>{children}</MemoryRouter>;
-// }
-
-export default function SignIn() {
+export default function AirlinesSignIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -60,7 +41,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Airline sign in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -87,7 +68,6 @@ export default function SignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Router>
               <Button
                 type="submit"
                 fullWidth
@@ -98,7 +78,6 @@ export default function SignIn() {
               >
                 Sign In
               </Button>
-          </Router>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
@@ -106,8 +85,8 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link href="/register/airline" variant="body2">
+                Don't have an account? Sign Up
               </Link>
             </Grid>
           </Grid>
