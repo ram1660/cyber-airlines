@@ -1,30 +1,22 @@
 import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 import { json } from "body-parser";
-import * as dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import { FlightSearchRoutes } from "./routes/flightSearchRoutes";
-
+import { startDB } from "./db/database";
+import router from "./routes/userControlRoutes";
 const app = express();
 app.use(json());
 app.use(cors());
 
-function authenticateToken(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers.get('Authorization');
-  const token = authHeader ? authHeader.split(' ')[1];
-  if (token === null) return res.status(401);
-  jwt.
-}
-
-function generateAccessTocket(user: { username: string, password: string}): void {
-  return jwt.sign(user, process.env.)
-}
 
 // Middleware for authenticating a user
-app.use(authenticateToken);
+app.use(router);
 
 // Routes
 
 
-app.listen(3000);
+app.listen(process.env.PORT, async () => {
+    await startDB();
+});
