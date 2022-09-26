@@ -2,14 +2,14 @@ import mongoose, { connect, Schema, model, Types, Model } from "mongoose";
 
 
 // The main documents for the database.
-interface IAirline {
+export interface IAirline {
     airlineId: string;
     airlineName: string;
     password: string;
     token: string;
 }
 
-interface ITicket {
+export interface ITicket {
     ticketId: string;
     airlineOperator: IAirline;
     quantity: number;
@@ -17,7 +17,7 @@ interface ITicket {
     toAirport: string;
 }
 
-interface ICustomer {
+export interface ICustomer {
     username: string;
     firstName: string;
     lastName: string;
