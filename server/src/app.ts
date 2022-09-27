@@ -1,7 +1,6 @@
 import express from "express";
 import { json } from "body-parser";
 import cors from "cors";
-import { FlightSearchRoutes } from "./routes/flightSearchRoutes";
 import { startDB } from "./db/database";
 import loginRouter from "./routes/loginRoutes";
 import registerRouter from "./routes/registerRoutes";
