@@ -35,6 +35,10 @@ export async function getCustomer(username: string): Promise<ICustomer> {
     return (await Customer.findOne().where('username').equals(username).exec()) as ICustomer;
 }
 
+export async function isRefreshTokenExists(token: string): Promise<boolean> {
+    return (await RefreshToken.findOne().where('token').equals(token).exec()) !== null;
+}
+
 export async function revokeAccess(token: string): Promise<void> {
     await RefreshToken.deleteOne({token});
 }
