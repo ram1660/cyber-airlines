@@ -1,8 +1,9 @@
 import express, { Request, Response } from "express";
-import { getAirline, isAirlineExists, isCustomerExists } from '../db/authQueries';
+import { getAirline, getCustomer, isAirlineExists, isCustomerExists, isRefreshTokenExists, revokeAccess } from '../db/authQueries';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-const loginRouter = express.Router();
+import { IAirline, ICustomer } from "../db/database";
+
 interface LoginRequest {
   username: string;
   password: string;
@@ -10,55 +11,123 @@ interface LoginRequest {
   loginType: string; // Could be "airline" or "customer".
 }
 
+interface LoginResponse {
+  username: string;
+  refreshToken: string;
+  accessToken: string;
+}
+
+interface LoginTokenPayload {
+  username: string;
+  password: string;
+}
+
+const loginRouter = express.Router();
+const EXPIRATION_TIME = '2h';
+
+
 loginRouter.post('/login', async (req: Request, res: Response) => {
-  try {
-    // Get user input
-    const loginRequest = req.body as unknown as LoginRequest;
+  // Get user request
+  const loginRequest = req.body as unknown as LoginRequest;
 
-    // Validate user input
-    if (loginRequest.username === '' || loginRequest.password === '') {
-      res.status(400).send('Oops! Looks like you are missing credentials.');
-      return;
+  // Validate user input
+  if (loginRequest.username === '' || loginRequest.password === '') {
+    return res.status(400).json({ message: 'Oops! Looks like you are missing credentials.' });
+  }
+  // Check if it's a customer or an airline and handle the request accordingly.
+  if (loginRequest.loginType === 'airline') {
+    if (await isAirlineExists(loginRequest.username) === false) {
+      return res.status(401).json({ message: 'Oops! The username or the password are incorrect!' });
     }
-    // Validate if user exist in our database
-    let user = null;
-    if (loginRequest.loginType === 'airline') {
-      user = (await isAirlineExists(loginRequest.username) === true) ? await getAirline(loginRequest.username) : null;
+    const airline: IAirline = await getAirline(loginRequest.username);
+    if (isPasswordMatching(loginRequest.password, airline.password) === false) {
+      return res.status(401).json({ message: 'Oops! The username or the password are incorrect!' });
     }
-    if (user === null) {
-      res.status(400).send('It seems like your credentials are incorrect!');
-      return;
+    let airlineTokens: LoginResponse = {
+      accessToken: '',
+      refreshToken: '',
+      username: ''
+    };
+    if (loginRequest.rememberMe === true) {
+      airlineTokens.refreshToken = generateRefreshToken({
+        username: loginRequest.username,
+        password: loginRequest.password,
+      });
     }
-    if (await bcrypt.compare(loginRequest.password, user.password) === true) {
-      // Create token
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
-
-      // save user token
-      user.token = token;
-
-      // user
-      res.status(200).json(user);
-      return;
+    airlineTokens.accessToken = generateAirlineAccessToken({ username: loginRequest.username });
+    res.status(200).json(airlineTokens);
+  } else if (loginRequest.loginType === 'customer') {
+    if (await isCustomerExists(loginRequest.username) === false) {
+      return res.status(401).json({ message: 'Oops! The username or the password are incorrect!' });
     }
-    res.status(400).send("Invalid Credentials");
-  } catch (err) {
-    console.log(err);
-    res.status(400).send(err);
+    const customer: ICustomer = await getCustomer(loginRequest.username);
+    if (isPasswordMatching(loginRequest.password, customer.password) === false) {
+      return res.status(401).json({ message: 'Oops! The username or the password are incorrect!' });
+    }
+    let customerTokens: LoginResponse = {
+      accessToken: '',
+      refreshToken: '',
+      username: ''
+    };
+    if (loginRequest.rememberMe === true) {
+      customerTokens.refreshToken = generateRefreshToken({
+        username: loginRequest.username,
+        password: loginRequest.password,
+      });
+    }
+    customerTokens.accessToken = generateCustomerAccessToken({ username: loginRequest.username });
+    res.status(200).json(customerTokens);
+  } else {
+    res.status(403).json({ message: 'It seems like you sent a bad request. Please try again.' });
   }
 });
 
-function handleAirlineLogin(request: LoginRequest): void {
+loginRouter.delete('/logout', async (req: Request, res: Response) => {
+  await revokeAccess(req.body.token);
+  res.sendStatus(204);
+});
 
-}
+loginRouter.post('/refreshToken', async (req: Request, res: Response) => {
+  const { username, refreshToken } = req.body;
+  if (refreshToken === null) {
+    return res.sendStatus(401);
+  }
+  if (await isRefreshTokenExists(refreshToken) === false) {
+    return res.sendStatus(403);
+  }
+  let decryptedToken;
+  try {
+    decryptedToken = jwt.verify(refreshToken, process.env['REFRESH_TOKEN_SECRET'] as string);
+  } catch (error) {
+    return res.sendStatus(403);
+  }
+  let newAccessToken;
+  if (await isCustomerExists(username) === true) {
+    newAccessToken = generateCustomerAccessToken({ username: username });
+  } else {
+    newAccessToken = generateAirlineAccessToken({ username: username });
+  }
+  res.status(200).json({
+    accessToken: newAccessToken
+  });
 
-function generateAccessToken(user: { username: string, password: string }): string {
-  return jwt.sign(user, process.env['ACCESS_TOKEN_SECRET'] as string, { expiresIn: '15m' });
-}
+});
 
-export default loginRouter;
+  function isPasswordMatching(password: string, hashedPassword: string) {
+    return bcrypt.compareSync(password, hashedPassword);
+  }
+
+  function generateCustomerAccessToken(user: { username: string }): string {
+    return jwt.sign(user, process.env['CUSTOMER_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
+  }
+
+  function generateAirlineAccessToken(user: { username: string }): string {
+    return jwt.sign(user, process.env['AIRLINE_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
+  }
+
+
+  function generateRefreshToken(payload: LoginTokenPayload): string {
+    return jwt.sign(payload, process.env['CUSTOMER_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
+  }
+
+  export default loginRouter;
