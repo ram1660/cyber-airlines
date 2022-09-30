@@ -11,15 +11,28 @@ declare module 'express-serve-static-core' {
 }
 
 
-function authenticateToken(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers['authorization'] as string;
-  const token = authHeader.split(' ')[1];
-  
-  if (token === null) return res.status(401);
-  jwt.verify(token, process.env['ACCESS_TOKEN_SECRET'] as string, (err, user) => {
-    if (err) return res.sendStatus(403);
+export function authenticateAirlineToken(req: Request, res: Response, next: NextFunction) {
+  const token = getAccessToken(req);
+  if (token === null) return res.status(400);
+  jwt.verify(token, process.env['AIRLINE_TOKEN_SECRET'] as string, (err, user) => {
+    if (err) return res.status(403).json({message: 'Invalid access.'});
     req.user = user;
+    next();
   });
 
-  next();
+}
+
+export function authenticateCustomerToken(req: Request, res: Response, next: NextFunction) {
+  const token = getAccessToken(req);
+  if (token === null) return res.status(400).json({message: 'Invalid access.'});
+  jwt.verify(token, process.env['CUSTOMER_TOKEN_SECRET'] as string, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Invalid access.'});
+    req.user = user;
+    next();
+  });
+
+}
+
+function getAccessToken(req: Request): string {
+  return (req.headers['authorization'] as string).split(' ')[1];
 }
