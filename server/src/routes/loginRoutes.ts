@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { getAirline, getCustomer, isAirlineExists, isCustomerExists, isRefreshTokenExists, revokeAccess } from '../db/authQueries';
+import { addRefreshToken, getAirline, getCustomer, isAirlineExists, isCustomerExists, isRefreshTokenExists, revokeAccess } from '../db/authQueries';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { IAirline, ICustomer } from "../db/database";
@@ -74,8 +74,11 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
         username: loginRequest.username,
         password: loginRequest.password,
       });
+      addRefreshToken(customerTokens.refreshToken);
+
     }
     customerTokens.accessToken = generateCustomerAccessToken({ username: loginRequest.username });
+    customerTokens.username = loginRequest.username;
     res.status(200).json(customerTokens);
   } else {
     res.status(403).json({ message: 'It seems like you sent a bad request. Please try again.' });
@@ -113,21 +116,21 @@ loginRouter.post('/refreshToken', async (req: Request, res: Response) => {
 
 });
 
-  function isPasswordMatching(password: string, hashedPassword: string) {
-    return bcrypt.compareSync(password, hashedPassword);
-  }
+function isPasswordMatching(password: string, hashedPassword: string) {
+  return bcrypt.compareSync(password, hashedPassword);
+}
 
-  function generateCustomerAccessToken(user: { username: string }): string {
-    return jwt.sign(user, process.env['CUSTOMER_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
-  }
+function generateCustomerAccessToken(user: { username: string }): string {
+  return jwt.sign(user, process.env['CUSTOMER_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
+}
 
-  function generateAirlineAccessToken(user: { username: string }): string {
-    return jwt.sign(user, process.env['AIRLINE_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
-  }
+function generateAirlineAccessToken(user: { username: string }): string {
+  return jwt.sign(user, process.env['AIRLINE_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
+}
 
 
-  function generateRefreshToken(payload: LoginTokenPayload): string {
-    return jwt.sign(payload, process.env['CUSTOMER_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
-  }
+function generateRefreshToken(payload: LoginTokenPayload): string {
+  return jwt.sign(payload, process.env['CUSTOMER_TOKEN_SECRET'] as string, { expiresIn: EXPIRATION_TIME });
+}
 
-  export default loginRouter;
+export default loginRouter;
