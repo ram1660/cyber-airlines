@@ -4,6 +4,8 @@ import cors from "cors";
 import { startDB } from "./db/database";
 import loginRouter from "./routes/loginRoutes";
 import registerRouter from "./routes/registerRoutes";
+import * as dotenv from 'dotenv';
+dotenv.config();
 const app = express();
 app.use(json());
 app.use(cors());
@@ -16,4 +18,7 @@ app.use(registerRouter);
 
 app.listen(process.env.PORT, async () => {
     await startDB();
+    console.log('Database started.');
+    console.log('Starting server at http://localhost:' + process.env['PORT'] as string);
+    
 });
