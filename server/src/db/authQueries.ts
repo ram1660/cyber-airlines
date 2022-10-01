@@ -39,6 +39,11 @@ export async function isRefreshTokenExists(token: string): Promise<boolean> {
     return (await RefreshToken.findOne().where('token').equals(token).exec()) !== null;
 }
 
+export async function addRefreshToken(token: string): Promise<void> {
+    const newRefreshToken = new RefreshToken({ token: token });
+    newRefreshToken.save();
+}
+
 export async function revokeAccess(token: string): Promise<void> {
-    await RefreshToken.deleteOne({token});
+    await RefreshToken.deleteOne({ token });
 }

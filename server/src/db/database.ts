@@ -3,7 +3,7 @@ import mongoose, { connect, Schema, model, Types, Model } from "mongoose";
 
 // The main documents for the database.
 export interface IAirline {
-    airlineUsername: string;
+    username: string;
     airlineName: string;
     password: string;
     token: string;
@@ -54,7 +54,7 @@ const customerSchema = new Schema<ICustomer>({
 
 const airlineSchema = new Schema<IAirline>({
     airlineName: { type: String, required: true, unique: true },
-    airlineUsername: { type: String, required: true, unique: true},
+    username: { type: String, required: true, unique: true},
     password: { type: String, required: true },
     token: { type: String, required: false },
 });
@@ -66,5 +66,5 @@ export const Airline = model<IAirline>('Airlines', airlineSchema);
 export const RefreshToken = model<IRefreshToken>('RefreshTokens', refreshTokenSchema);
 
 export async function startDB(): Promise<void> {
-    await connect('mongodb://localhost:27017/airlinesDB');
+    await connect('mongodb://127.0.0.1:27017/cyber-airlinesDB');
 }
