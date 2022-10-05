@@ -1,12 +1,12 @@
 export interface CustomerRegisterForm {
     firstName: string;
     lastName: string;
-    email: string;
+    username: string;
     password: string;
 }
 
 export interface AirlineRegisterForm {
     airlineName: string;
-    email: string;
+    username: string;
     password: string;
 }
