@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { registerAirline } from '../../../apiCommunicator';
 
 const theme = createTheme();
 
@@ -21,7 +22,11 @@ export default function AirLineSignUp() {
       email: data.get('email'),
       password: data.get('password'),
     });
-
+    // const resposne = await registerAirline({
+    //   airlineName: data.get('airlineName')?.toString(),
+    //   username: data.get('username'),
+    //   password: data.get('password')
+    // });
   };
 
   return (
