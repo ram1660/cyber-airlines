@@ -11,10 +11,29 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { registerAirline } from '../../../apiCommunicator';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { AirlineRegisterForm } from '../../../interfaces/registerForms';
 
 const theme = createTheme();
 
 export default function AirLineSignUp() {
+  const [submitStatus, setSubmitStatus] = React.useState(false);
+  const navigator = useNavigate();
+  const sendRegisterForm = async (form: AirlineRegisterForm) => {
+    return await registerAirline(form);
+  }
+  const registerMutation = useMutation(sendRegisterForm, {
+    onSuccess: (data, variables, context) => {
+      console.log(data);
+      setTimeout(() => {
+        navigator('/login/airline');
+      }, 5000);
+    },
+    onError: (error, variables, context) => {
+      console.log(error);
+    }
+  });
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -22,11 +41,12 @@ export default function AirLineSignUp() {
       email: data.get('email'),
       password: data.get('password'),
     });
-    // const resposne = await registerAirline({
-    //   airlineName: data.get('airlineName')?.toString(),
-    //   username: data.get('username'),
-    //   password: data.get('password')
-    // });
+    const form: AirlineRegisterForm = {
+      airlineName: data.get('airlineName')?.toString()!,
+      username: data.get('username')?.toString()!,
+      password: data.get('password')?.toString()!
+    }
+    registerMutation.mutate(form);
   };
 
   return (
@@ -49,25 +69,15 @@ export default function AirLineSignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="Airline name"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
+                  id="airlineName"
+                  label="Airline name"
                   autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -113,6 +123,16 @@ export default function AirLineSignUp() {
               </Grid>
             </Grid>
           </Box>
+          <Typography component='p' variant='body1'>{
+            registerMutation.isLoading ? (
+              'Please wait while we are sending your request!'
+            ) : null}
+            {
+              registerMutation.isError ? (
+                'Could not perform register. Please try again'
+              ) : null
+            }
+          </Typography>
         </Box>
       </Container>
     </ThemeProvider>

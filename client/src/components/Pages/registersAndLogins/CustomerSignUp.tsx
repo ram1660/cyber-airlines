@@ -10,17 +10,48 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { registerCustomer } from '../../../apiCommunicator';
+import { CustomerRegisterForm } from '../../../interfaces/registerForms';
 
 const theme = createTheme();
 
 export default function CustomerSignUp() {
+  // Hooks
+  const [submitStatus, setSubmitStatus] = React.useState(false);
+  const navigator = useNavigate();
+  // Server request/handling.
+  const sendRegisterForm = async (form: CustomerRegisterForm) => {
+    return await registerCustomer(form);
+  }
+  const registerMutation = useMutation(sendRegisterForm, {
+    onSuccess: (data, variables, context) => {
+      console.log(data);
+      setTimeout(() => {
+        navigator('/login');
+      }, 5000);
+    },
+    onError: (error, variables, context) => {
+      console.log(error);
+    }
+  });
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    if (submitStatus === true) {
+      return;
+    }
+    setSubmitStatus(true);
     event.preventDefault();
+    
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const registerForm: CustomerRegisterForm = {
+      firstName: data.get('firstName')?.toString()!,
+      lastName: data.get('lastName')?.toString()!,
+      username: data.get('username')?.toString()!,
+      password: data.get('password')?.toString()!
+    };
+    registerMutation.mutate(registerForm);
   };
 
   return (
@@ -107,6 +138,16 @@ export default function CustomerSignUp() {
               </Grid>
             </Grid>
           </Box>
+          <Typography component='p' variant='body1'>{
+            registerMutation.isLoading ? (
+              'Please wait while we are sending your request!'
+            ) : null}
+            {
+              registerMutation.isError ? (
+                'Could not perform register. Please try again'
+              ) : null
+            }
+          </Typography>
         </Box>
       </Container>
     </ThemeProvider>
