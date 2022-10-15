@@ -1,6 +1,7 @@
 import { AirlineRegisterForm, CustomerRegisterForm } from "./interfaces/registerForms";
 import Response from './interfaces/response';
 import axios from "axios";
+import { SignInForm } from "./interfaces/loginForm";
 
 const PORT = '3000';
 const communicator = axios.create({
@@ -9,11 +10,16 @@ const communicator = axios.create({
 
 
 export async function registerCustomer(form: CustomerRegisterForm): Promise<Response> {
-    const response = await communicator.post('/register', form);
+    const response = await communicator.post('/register/customer', form);
     return { code: response.status, message: await response.data};
 }
 
 export async function registerAirline(form: AirlineRegisterForm): Promise<Response> {
     const response = await communicator.post('/register/airline', form);
+    return { code: response.status, message: await response.data};
+}
+
+export async function signIn(form: SignInForm): Promise<Response> {
+    const response = await communicator.post('/login', form);
     return { code: response.status, message: await response.data};
 }

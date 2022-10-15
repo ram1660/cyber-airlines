@@ -14,6 +14,8 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { registerCustomer } from '../../../apiCommunicator';
 import { CustomerRegisterForm } from '../../../interfaces/registerForms';
+import Response from '../../../interfaces/response';
+import { LoggedIn } from '../../../globals';
 
 const theme = createTheme();
 
@@ -21,6 +23,12 @@ export default function CustomerSignUp() {
   // Hooks
   const [submitStatus, setSubmitStatus] = React.useState(false);
   const navigator = useNavigate();
+  const loggedInCtx = React.useContext(LoggedIn);
+  React.useEffect(() => {
+    if (loggedInCtx === true) {
+      navigator('/');
+    }
+  });
   // Server request/handling.
   const sendRegisterForm = async (form: CustomerRegisterForm) => {
     return await registerCustomer(form);
@@ -32,9 +40,6 @@ export default function CustomerSignUp() {
         navigator('/login');
       }, 5000);
     },
-    onError: (error, variables, context) => {
-      console.log(error);
-    }
   });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,7 +48,7 @@ export default function CustomerSignUp() {
     }
     setSubmitStatus(true);
     event.preventDefault();
-    
+
     const data = new FormData(event.currentTarget);
     const registerForm: CustomerRegisterForm = {
       firstName: data.get('firstName')?.toString()!,
@@ -133,20 +138,23 @@ export default function CustomerSignUp() {
               </Grid>
               <Grid item xs>
                 <Link href="/login/airline" variant="body2">
-                  Are you an airline? Sign in  
+                  Are you an airline? Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
-          <Typography component='p' variant='body1'>{
+          <Typography color='common.red' component='p' variant='body1'>{
             registerMutation.isLoading ? (
               'Please wait while we are sending your request!'
             ) : null}
             {
               registerMutation.isError ? (
-                'Could not perform register. Please try again'
-              ) : null
-            }
+                `Could not perform login. Please try again.\n ${(registerMutation.context as Response).message}`
+              ) : null}
+            {
+              registerMutation.isSuccess ? (
+                'Register successfully! Redirecting to login screen.'
+              ) : null}
           </Typography>
         </Box>
       </Container>

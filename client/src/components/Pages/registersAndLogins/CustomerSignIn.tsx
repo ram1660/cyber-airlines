@@ -12,17 +12,45 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useMutation } from 'react-query';
+import { SignInForm } from '../../../interfaces/loginForm';
+import { signIn } from '../../../apiCommunicator';
+import Response from '../../../interfaces/response';
+import { useNavigate } from 'react-router-dom';
+import AuthContext, { AuthInterface } from '../../../context/AuthProvider';
+import { LoggedIn } from '../../../globals';
 
 const theme = createTheme();
 
 export default function CustomerSignIn() {
+  const navigator = useNavigate();
+  const signInCustomer = async (form: SignInForm) => {
+    return await signIn(form);
+  };
+  const loggedInCtx = React.useContext(LoggedIn);
+  React.useEffect(() => {
+    if (loggedInCtx === true) {
+      navigator('/');
+    }
+  });
+  
+  const loginMutation = useMutation(signInCustomer, {
+    onSuccess(data, variables, context) {
+      localStorage.setItem('token', JSON.stringify(data.message));
+      setTimeout(() => {
+        navigator('/');
+      }, 5000);
+    },
+  });
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const form: SignInForm = {
+      username: data.get('username')?.toString()!,
+      password: data.get('password')?.toString()!,
+      type: 'customer'
+    };
+    loginMutation.mutate(form);
   };
 
   return (
@@ -89,6 +117,19 @@ export default function CustomerSignIn() {
               </Grid>
             </Grid>
           </Box>
+          <Typography component='p' variant='body1'>{
+            loginMutation.isLoading ? (
+              'Please wait.'
+            ) : null}
+            {
+              loginMutation.isError ? (
+                `Could not perform register. Please try again. \n ${(loginMutation.context as Response).message}`
+              ) : null}
+            {
+              loginMutation.isSuccess ? (
+                'Register successfully! Redirecting to login screen.'
+              ) : null}
+          </Typography>
         </Box>
       </Container>
     </ThemeProvider>

@@ -1,9 +1,8 @@
 /**
  * Used as a Sign in request for either a customer or an airline.
  */
-export interface CustomerRegisterForm {
-    firstName: string;
-    lastName: string;
+export interface SignInForm {
+    type: string;
     username: string;
     password: string;
 }
@@ -11,8 +10,7 @@ export interface CustomerRegisterForm {
 /**
  * The respond we get from the server.
  */
-export interface AirlineRegisterForm {
-    airlineName: string;
+export interface SignInResponse {
     username: string;
-    password: string;
+    token: string;
 }
