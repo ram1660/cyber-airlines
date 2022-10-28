@@ -35,7 +35,6 @@ export default function CustomerSignUp() {
   }
   const registerMutation = useMutation(sendRegisterForm, {
     onSuccess: (data, variables, context) => {
-      console.log(data);
       setTimeout(() => {
         navigator('/login');
       }, 5000);
@@ -130,13 +129,13 @@ export default function CustomerSignUp() {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end" >
+            <Grid container>
               <Grid item xs>
                 <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
-              <Grid item xs>
+              <Grid item>
                 <Link href="/login/airline" variant="body2">
                   Are you an airline? Sign in
                 </Link>

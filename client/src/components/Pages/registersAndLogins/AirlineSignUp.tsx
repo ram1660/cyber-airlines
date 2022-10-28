@@ -18,7 +18,6 @@ import { AirlineRegisterForm } from '../../../interfaces/registerForms';
 const theme = createTheme();
 
 export default function AirLineSignUp() {
-  const [submitStatus, setSubmitStatus] = React.useState(false);
   const navigator = useNavigate();
   const sendRegisterForm = async (form: AirlineRegisterForm) => {
     return await registerAirline(form);

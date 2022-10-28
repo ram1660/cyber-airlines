@@ -1,5 +1,4 @@
-import { Avatar, CssBaseline, Divider, Skeleton, Typography } from '@mui/material';
-import Grid2 from '@mui/material/Unstable_Grid2';
+import { Avatar, CssBaseline, Skeleton, Typography } from '@mui/material';
 import AirlinesIcon from '@mui/icons-material/Airlines';
 import { Container } from '@mui/system';
 import { getAirlineProfile } from '../../apiCommunicator';

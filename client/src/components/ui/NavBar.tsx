@@ -30,7 +30,7 @@ export default function NavBar() {
     } else {
         settings.unshift({ description: 'Login', url: '/login' }, { description: 'Airline login', url: 'login/airline'});
     }
-    const pages = [{ description: 'Purchase a flight', url: '/search' }, { description: 'About', url: '/about' }];
+    const pages = [{ description: 'Book a flight', url: '/search' }, { description: 'About', url: '/about' }];
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -48,7 +48,7 @@ export default function NavBar() {
     };
 
     return (
-        <><AppBar position="static">
+        <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <AirplaneTicket sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -170,8 +170,5 @@ export default function NavBar() {
                 </Toolbar>
             </Container>
         </AppBar>
-
-        </>
-
     );
 }
