@@ -7,8 +7,12 @@ const profileRouter = express.Router();
 
 profileRouter.get('/public/airline/profile', async (req, res) => {
     const name: string = req.query['name']?.toString()!;
-    const airlineProfile = await getAirlineProfile(name);
-    res.json(airlineProfile);
+    try {
+        const airlineProfile = await getAirlineProfile(name);
+        res.json(airlineProfile);   
+    } catch (error: any) {
+        res.status(404).json({message: error});
+    }
 });
 
 profileRouter.get('/profile/customer', authenticateCustomerToken, async (req, res) => {

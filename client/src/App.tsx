@@ -45,7 +45,7 @@ function App() {
               </Route>
               <Route path='/' element={<Home />} />
               <Route path='/home' element={<Home />} />
-              <Route path='/airline/profile/:airlineId' element={<AirlineProfile />} />
+              <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
               <Route path='*' element={<PageNotFound />} />
             </Routes>
 
