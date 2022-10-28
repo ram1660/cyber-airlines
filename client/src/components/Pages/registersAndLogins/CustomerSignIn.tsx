@@ -17,7 +17,6 @@ import { SignInForm } from '../../../interfaces/loginForm';
 import { signIn } from '../../../apiCommunicator';
 import Response from '../../../interfaces/response';
 import { useNavigate } from 'react-router-dom';
-import AuthContext, { AuthInterface } from '../../../context/AuthProvider';
 import { LoggedIn } from '../../../globals';
 
 const theme = createTheme();

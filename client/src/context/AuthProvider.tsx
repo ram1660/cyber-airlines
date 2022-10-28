@@ -14,14 +14,14 @@ const AuthContext = createContext<AuthInterface>({
     username: ''
 });
 
-export const AuthProvider = (children: React.ReactNode ) => {
-    const [auth, setAuth] = useState(getInitialState);
+// export const AuthProvider = (children: React.ReactNode ) => {
+//     const [auth, setAuth] = useState(getInitialState);
 
-    return (
-        <AuthContext.Provider value={{ auth, token: '', username: '', setAuth }}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+//     return (
+//         <AuthContext.Provider value={{ auth, token: '', username: '', setAuth }}>
+//             {children}
+//         </AuthContext.Provider>
+//     )
+// }
 
 export default AuthContext;

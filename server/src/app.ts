@@ -18,6 +18,7 @@ app.use(loginRouter);
 app.use(registerRouter);
 app.use(searchRouter);
 app.use(profileRouter);
+
 app.listen(process.env.PORT, async () => {
     await startDB();
     console.log('Database started.');
