@@ -3,6 +3,7 @@ import Response from './interfaces/response';
 import axios from "axios";
 import { SignInForm } from "./interfaces/loginForm";
 import { AirlineData } from "./components/Pages/AirlineProfile";
+import SearchAirportsResponse from "./interfaces/searchAirportsResponse";
 
 const PORT = '3000';
 const communicator = axios.create({
@@ -27,4 +28,9 @@ export async function registerAirline(form: AirlineRegisterForm): Promise<Respon
 export async function signIn(form: SignInForm): Promise<Response> {
     const response = await communicator.post('/login', form);
     return { code: response.status, message: await response.data};
+}
+
+export async function findAirports(searchTerm: string): Promise<SearchAirportsResponse> {
+    const response = await communicator.get('/search/airports?airport=' + searchTerm) as SearchAirportsResponse;
+    return response;
 }
