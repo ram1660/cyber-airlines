@@ -42,23 +42,21 @@ searchRouter.get('/search/airports', (req: Request, res: Response) => {
         });
         return;
     }
-    
+
     const matchedAirports = Object.values(airports).filter((airport, index) => {
         // The try catch is here because of a weird bug with the JSON.
         // The function goes out of boundaries try to access undefined.
         try {
-            return airport.name.startsWith(inputAirport);
+            return airport.name.toLowerCase().startsWith(inputAirport);
         } catch (error) {
         }
     });
 
     if (matchedAirports.length === 0) {
-        res.json({
-            message: 'No airports have been found with this name!'
-        });
+        res.json({ matchedAirports: [] });
         return;
     }
-    res.json(matchedAirports);
+    res.json({ matchedAirports: matchedAirports });
 });
 
 export default searchRouter;
