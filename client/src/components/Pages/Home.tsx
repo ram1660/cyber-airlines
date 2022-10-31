@@ -23,41 +23,15 @@ export default function Home() {
 
   const getAirports = async (term: string) => {
     if (term === '') {
-      return;
+      return [INITIAL_SEARCH_MESSAGE];
     }
     const foundAirports = await findAirports(term);
-    console.log(foundAirports);
-    
+
     return foundAirports.matchedAirports.map((matchedAirport) => `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`);
   };
 
   const originSearchQuery = useQuery(['originSearch', originDebounce], () => getAirports(originDebounce));
   const destinationSearchQuery = useQuery(['destinationSearch', destinationDebounce], () => getAirports(destinationDebounce));
-  
-  // const originFoundAirports = useMemo(() => originSearchQuery.data?.matchedAirports.map((matchedAirport) => {
-  //   return `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`
-  // }), [originSearchQuery.data]);
-  // const destinationFoundAirports = useMemo(() => destinationSearchQuery.data?.matchedAirports.map((matchedAirport) => {
-  //   return `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`
-  // }), [originSearchQuery.data]);
-  // if (originSearchQuery.isSuccess) {
-  //   const originAirportsInfo = originSearchQuery.data?.matchedAirports.map((matchedAirport) => {
-  //     return `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`
-  //   });
-  //   setOriginAirports(originAirportsInfo!);
-  // }
-// if (originSearchQuery.isSuccess) {
-//   setOriginAirports(originAirports!); 
-// }
-// if (destinationSearchQuery.isSuccess) {
-//   setDestinationAirports(destinationAirports!);
-// }
-  // if (destinationSearchQuery.isSuccess) {
-  //   const destinationAirportsInfo = destinationSearchQuery.data?.matchedAirports.map((matchedAirport) => {
-  //     return `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`
-  //   });
-  //   setDestinationAirports(destinationAirportsInfo!);
-  // }
 
   // Listening for a change in either the origin input or the destination input and updating the internal value before debouncing it.
   const handleSearch = (event: React.SyntheticEvent, value: string, reason: string) => {
@@ -84,13 +58,17 @@ export default function Home() {
 
         <Autocomplete
           onInputChange={handleSearch}
+          freeSolo
+          getOptionDisabled={(option) => option === INITIAL_SEARCH_MESSAGE}
           options={originSearchQuery.data === undefined ? [] : originSearchQuery.data}
           getOptionLabel={(option) => option}
           renderInput={(params) => <TextField {...params} label='Origin airport' />}
           id='origin-search'
           filterOptions={(x) => x} />
         <Autocomplete onInputChange={handleSearch}
+          freeSolo
           options={destinationSearchQuery.data === undefined ? [] : destinationSearchQuery.data}
+          getOptionDisabled={(option) => option === INITIAL_SEARCH_MESSAGE}
           renderInput={(params) => <TextField {...params} label='Destination airport' />}
           id='destination-search'
           filterOptions={(x) => x} />

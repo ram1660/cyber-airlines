@@ -37,9 +37,7 @@ searchRouter.get('/search/flights', (req: Request, res: Response) => {
 searchRouter.get('/search/airports', (req: Request, res: Response) => {
     const inputAirport = req.query['airport']?.toString();
     if (inputAirport === undefined) {
-        res.status(400).json({
-            message: 'Bad request.'
-        });
+        res.status(400).json({ matchedAirports: [] });
         return;
     }
 

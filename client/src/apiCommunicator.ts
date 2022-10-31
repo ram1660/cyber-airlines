@@ -31,6 +31,6 @@ export async function signIn(form: SignInForm): Promise<Response> {
 }
 
 export async function findAirports(searchTerm: string): Promise<SearchAirportsResponse> {
-    const response = await communicator.get('/search/airports?airport=' + searchTerm) as SearchAirportsResponse;
+    const response = await (await communicator.get('/search/airports?airport=' + searchTerm)).data as SearchAirportsResponse;
     return response;
 }
