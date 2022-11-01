@@ -1,4 +1,4 @@
-import { Customer, Airline, IAirline, ICustomer, Ticket } from './database';
+import { Customer, Airline, Ticket } from './database';
 
 interface CustomerProfile {
     firstName: string;

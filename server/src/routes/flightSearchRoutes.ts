@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import * as airports from '../db/airports.json';
+import { searchFlights } from "../db/flightsSearches";
 /**
  * This file responsible for looking up for available flights from a source airport to a destination airport.
  */
@@ -22,16 +23,14 @@ interface AirportObj {
     objectID: string;
 }
 
-interface FlightInfo {
-    airlineName: string;
-    aircraftName: string;
-    availableTickets: number;
-    fromAirport: string;
-    destinationAirport: string;
-}
-
-searchRouter.get('/search/flights', (req: Request, res: Response) => {
-
+searchRouter.get('/search/flights', async (req: Request, res: Response) => {
+    const {origin, destination} = req.query;
+    const availableFlights = await searchFlights(origin?.toString()!, destination?.toString()!);
+    if (origin === undefined || destination === undefined) {
+        res.status(400).json({ flights: [] });
+        return;
+    }
+    res.json({flights: availableFlights});
 });
 
 searchRouter.get('/search/airports', (req: Request, res: Response) => {
