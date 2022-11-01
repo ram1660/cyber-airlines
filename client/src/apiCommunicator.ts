@@ -4,6 +4,7 @@ import axios from "axios";
 import { SignInForm } from "./interfaces/loginForm";
 import { AirlineData } from "./components/Pages/AirlineProfile";
 import SearchAirportsResponse from "./interfaces/searchAirportsResponse";
+import { FlightDetailsResponse } from "./interfaces/AvailableFlights";
 
 const PORT = '3000';
 const communicator = axios.create({
@@ -32,5 +33,10 @@ export async function signIn(form: SignInForm): Promise<Response> {
 
 export async function findAirports(searchTerm: string): Promise<SearchAirportsResponse> {
     const response = await (await communicator.get('/search/airports?airport=' + searchTerm)).data as SearchAirportsResponse;
+    return response;
+}
+
+export async function findFlights(originAirport: string, destinationAirport: string): Promise<FlightDetailsResponse> {
+    const response = await (await communicator.get('search/flights?origin=' + originAirport + '&destination=' + destinationAirport)).data as FlightDetailsResponse;
     return response;
 }
