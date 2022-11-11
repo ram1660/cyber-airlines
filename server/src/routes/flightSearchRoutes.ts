@@ -24,8 +24,8 @@ interface AirportObj {
 }
 
 searchRouter.get('/search/flights', async (req: Request, res: Response) => {
-    const {origin, destination} = req.query;
-    const availableFlights = await searchFlights(origin?.toString()!, destination?.toString()!);
+    const {origin, destination, page} = req.query;
+    const availableFlights = await searchFlights(origin?.toString()!, destination?.toString()!, parseInt(page?.toString()!));
     if (origin === undefined || destination === undefined) {
         res.status(400).json({ flights: [] });
         return;

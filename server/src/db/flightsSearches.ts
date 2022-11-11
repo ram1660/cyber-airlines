@@ -8,8 +8,14 @@ interface FlightDetails {
     arrivalTime: string;
 }
 
-export async function searchFlights(origin: string, destination: string): Promise<FlightDetails[]> {
-    const matchedFlights = await Ticket.find().where('fromAirport').equals(origin).where('toAirport').equals(destination).exec();
+export async function searchFlights(origin: string, destination: string, page: number): Promise<FlightDetails[]> {
+    const matchedFlights = await Ticket.find()
+    .where('fromAirport')
+    .equals(origin)
+    .where('toAirport')
+    .equals(destination)
+    .skip(page * 4).
+    limit(4).exec();
     return matchedFlights.map((flight) =>  {
         return {
             operator: flight.airlineOperator.airlineName,

@@ -53,15 +53,15 @@ const customerSchema = new Schema<ICustomer>({
     lastName: { type: String, required: true },
     password: { type: String, required: true },
     token: { type: String, required: false, },
-    boughtTickets: { type: [ticketsSchema], required: true }
-});
+    boughtTickets: { type: [ticketsSchema], required: true },
+}, {timestamps: true});
 
 const airlineSchema = new Schema<IAirline>({
     airlineName: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true},
     password: { type: String, required: true },
     token: { type: String, required: false },
-});
+}, {timestamps: true});
 
 // Models
 export const Customer = model<ICustomer>('Customers', customerSchema);
