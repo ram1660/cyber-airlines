@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './styles/App.css';
 import NavBar from './components/ui/NavBar';
-import { LoggedIn } from './globals';
 import CustomerSignIn from './components/Pages/registersAndLogins/CustomerSignIn';
 import CustomerSignUp from './components/Pages/registersAndLogins/CustomerSignUp';
 import Home from './components/Pages/Home';
@@ -28,33 +27,31 @@ function checkLogin() {
 const queryClient = new QueryClient();
 
 function App() {
+  useEffect(() => {
+
+  }, []);
   return (
-    <>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <LoggedIn.Provider value={checkLogin()}>
-            <NavBar />
-            <Routes>
-              <Route path='/login'>
-                <Route index element={<CustomerSignIn />} />
-                <Route path='airline' element={<AirlinesSignIn />} />
-              </Route>
-              <Route path='/register'>
-                <Route index element={<CustomerSignUp />} />
-                <Route path='airline' element={<AirLineSignUp />} />
-              </Route>
-              <Route path='/' element={<Home />} />
-              <Route path='/home' element={<Home />} />
-              <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
-              <Route path='*' element={<PageNotFound />} />
-            </Routes>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <NavBar />
+        <Routes>
+          <Route path='/login'>
+            <Route index element={<CustomerSignIn />} />
+            <Route path='airline' element={<AirlinesSignIn />} />
+          </Route>
+          <Route path='/register'>
+            <Route index element={<CustomerSignUp />} />
+            <Route path='airline' element={<AirLineSignUp />} />
+          </Route>
+          <Route path='/' element={<Home />} />
+          <Route path='/home' element={<Home />} />
+          <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
+          <Route path='*' element={<PageNotFound />} />
+        </Routes>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </BrowserRouter>
 
-          </LoggedIn.Provider>
-          <ReactQueryDevtools initialIsOpen={false}/>
-        </QueryClientProvider>
-      </BrowserRouter>
-
-    </>
   );
 }
 
