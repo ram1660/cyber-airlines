@@ -14,22 +14,36 @@ import MenuItem from '@mui/material/MenuItem';
 import AirplaneTicket from '@mui/icons-material/AirplaneTicket';
 import * as globals from '../../globals';
 import { Link as RouterLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectAuth } from '../../features/authenticateSlice';
+import { selectUser } from '../../features/userSlice';
+
+interface ProfileDropBox {
+    description: string;
+    url: string;
+}
 
 
 export default function NavBar() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    // A context for knowing if to show to the user the logout button or not.
-    // Any other settings won't make any check if the user is logged in or not only the corresponding component from the route.
-    const isLoggedIn = React.useContext(globals.LoggedIn);
 
+    const authSelector = useSelector(selectAuth);
+    const userSelector = useSelector(selectUser);
     // Nav bar options.
-    const settings = [{ description: 'Profile', url: '/profile' }, { description: 'My orders', url: '/orders' }];
-    if (isLoggedIn === true) {
-        settings.push({ description: 'Logout', url: '/logout' });
+    const profileSettings: ProfileDropBox[] = [];
+    if (authSelector === true) {
+        profileSettings.push({ description: 'Profile', url: '/profile' });
+        if (userSelector === 'AIRLINE') {
+            profileSettings.push({description: 'Edit Flights', url: '/edit/flights'});
+        } else {
+            profileSettings.push({ description: 'My orders', url: '/orders' });
+        }
+        profileSettings.push({ description: 'Logout', url: '/logout' });
     } else {
-        settings.unshift({ description: 'Login', url: '/login' }, { description: 'Airline login', url: 'login/airline'});
+        profileSettings.push({ description: 'Login', url: '/login' }, { description: 'Airline login', url: 'login/airline' });
     }
+
     const pages = [{ description: 'Book a flight', url: '/search' }, { description: 'About', url: '/about' }];
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -160,9 +174,9 @@ export default function NavBar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
+                            {profileSettings.map((setting) => (
                                 <MenuItem key={setting.description} onClick={handleCloseUserMenu} component={RouterLink} to={setting.url}>
-                                        <Typography textAlign="center">{setting.description}</Typography>
+                                    <Typography textAlign="center">{setting.description}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>

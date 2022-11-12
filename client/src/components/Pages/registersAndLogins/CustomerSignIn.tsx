@@ -17,18 +17,20 @@ import { SignInForm } from '../../../interfaces/loginForm';
 import { signIn } from '../../../apiCommunicator';
 import Response from '../../../interfaces/response';
 import { useNavigate } from 'react-router-dom';
-import { LoggedIn } from '../../../globals';
+import { selectAuth, signedIn } from '../../../features/authenticateSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const theme = createTheme();
 
 export default function CustomerSignIn() {
   const navigator = useNavigate();
+  const dispatch = useDispatch();
+  const authSelector = useSelector(selectAuth);
   const signInCustomer = async (form: SignInForm) => {
     return await signIn(form);
   };
-  const loggedInCtx = React.useContext(LoggedIn);
   React.useEffect(() => {
-    if (loggedInCtx === true) {
+    if (authSelector === true) {
       navigator('/');
     }
   });
@@ -36,6 +38,7 @@ export default function CustomerSignIn() {
   const loginMutation = useMutation(signInCustomer, {
     onSuccess(data, variables, context) {
       localStorage.setItem('token', JSON.stringify(data.message));
+      dispatch(signedIn);
       setTimeout(() => {
         navigator('/');
       }, 5000);

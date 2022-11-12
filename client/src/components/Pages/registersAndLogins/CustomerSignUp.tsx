@@ -15,7 +15,8 @@ import { useNavigate } from 'react-router-dom';
 import { registerCustomer } from '../../../apiCommunicator';
 import { CustomerRegisterForm } from '../../../interfaces/registerForms';
 import Response from '../../../interfaces/response';
-import { LoggedIn } from '../../../globals';
+import { useSelector } from 'react-redux';
+import { selectAuth } from '../../../features/authenticateSlice';
 
 const theme = createTheme();
 
@@ -23,9 +24,9 @@ export default function CustomerSignUp() {
   // Hooks
   const [submitStatus, setSubmitStatus] = React.useState(false);
   const navigator = useNavigate();
-  const loggedInCtx = React.useContext(LoggedIn);
+  const authSelector = useSelector(selectAuth);
   React.useEffect(() => {
-    if (loggedInCtx === true) {
+    if (authSelector === true) {
       navigator('/');
     }
   });
