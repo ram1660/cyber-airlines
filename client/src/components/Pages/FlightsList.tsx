@@ -1,12 +1,19 @@
 import React from 'react';
+import { useInfiniteQuery } from 'react-query';
 import { FlightDetailsResponse } from '../../interfaces/AvailableFlights';
 
 
 export default function FlightsList(flights: FlightDetailsResponse) {
 
-    return (
-        <Grid>
+  const fetchFlights = () => {
+    
+  }
+  const flightsQuery = useInfiniteQuery('flights');
 
-        </Grid>
+    return (
+      <></>
+        // <Grid>
+
+        // </Grid>
   )
 }

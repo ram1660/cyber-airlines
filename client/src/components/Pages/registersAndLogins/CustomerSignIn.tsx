@@ -38,7 +38,9 @@ export default function CustomerSignIn() {
   const loginMutation = useMutation(signInCustomer, {
     onSuccess(data, variables, context) {
       localStorage.setItem('token', JSON.stringify(data.message));
-      dispatch(signedIn);
+      dispatch(signedIn());
+      console.log(authSelector);
+      
       setTimeout(() => {
         navigator('/');
       }, 5000);
@@ -50,7 +52,8 @@ export default function CustomerSignIn() {
     const form: SignInForm = {
       username: data.get('username')?.toString()!,
       password: data.get('password')?.toString()!,
-      type: 'customer'
+      loginType: 'customer',
+      rememberMe: data.has('remember')
     };
     loginMutation.mutate(form);
   };
@@ -97,6 +100,8 @@ export default function CustomerSignIn() {
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
+              name='remember'
+              id='remember'
             />
             <Button
               type="submit"
@@ -125,11 +130,11 @@ export default function CustomerSignIn() {
             ) : null}
             {
               loginMutation.isError ? (
-                `Could not perform register. Please try again. \n ${(loginMutation.context as Response).message}`
+                `Could not perform register. Please try again. \n ${(loginMutation.error as Response).message}`
               ) : null}
             {
               loginMutation.isSuccess ? (
-                'Register successfully! Redirecting to login screen.'
+                'Login successfully! Redirecting to main menu.'
               ) : null}
           </Typography>
         </Box>
