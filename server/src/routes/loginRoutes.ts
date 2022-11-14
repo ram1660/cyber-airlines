@@ -75,7 +75,6 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
         password: loginRequest.password,
       });
       addRefreshToken(customerTokens.refreshToken);
-
     }
     customerTokens.accessToken = generateCustomerAccessToken({ username: loginRequest.username });
     customerTokens.username = loginRequest.username;
@@ -86,7 +85,7 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
 });
 
 loginRouter.delete('/logout', async (req: Request, res: Response) => {
-  await revokeAccess(req.body.token);
+  revokeAccess(req.body.token);
   res.sendStatus(204);
 });
 
@@ -114,6 +113,20 @@ loginRouter.post('/refreshToken', async (req: Request, res: Response) => {
     accessToken: newAccessToken
   });
 
+});
+
+loginRouter.get('/api/validate', (req, res) => {
+  const { token, username, type } = req.body;
+  if (type === 'CUSTOMER') {
+    if (jwt.verify(token, process.env['CUSTOMER_TOKEN_SECRET'] as string)) {
+
+    }
+
+  } else if (type === 'AIRLINE') {
+    jwt.verify(token, process.env['AIRLINE_TOKEN_SECRET'] as string, (error) => {
+      error ? res.json({ isValid: false }) : res.json({ isValid: true });
+    });
+  }
 });
 
 function isPasswordMatching(password: string, hashedPassword: string) {

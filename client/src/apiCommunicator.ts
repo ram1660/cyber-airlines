@@ -37,6 +37,11 @@ export async function findAirports(searchTerm: string): Promise<SearchAirportsRe
 }
 
 export async function findFlights(originAirport: string, destinationAirport: string): Promise<FlightDetailsResponse> {
-    const response = await (await communicator.get('search/flights?origin=' + originAirport + '&destination=' + destinationAirport)).data as FlightDetailsResponse;
+    const response = await (await communicator.get('/search/flights?origin=' + originAirport + '&destination=' + destinationAirport)).data as FlightDetailsResponse;
     return response;
+}
+
+export async function validateToken(token: string): Promise<boolean> {
+    const isValid: boolean = await (await communicator.get('/api/validate')).data['isValid'];
+    return isValid;
 }
