@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './styles/App.css';
 import NavBar from './components/ui/NavBar';
 import CustomerSignIn from './components/Pages/registersAndLogins/CustomerSignIn';
@@ -9,49 +9,50 @@ import PageNotFound from './components/Pages/PageNotFound';
 import AirlineProfile from './components/Pages/AirlineProfile';
 import AirLineSignUp from './components/Pages/registersAndLogins/AirlineSignUp';
 import AirlinesSignIn from './components/Pages/registersAndLogins/AirlineSignIn';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-
-/**
- * Performs a check if the user is logged in by looking at the local storage of the browser.
- * 
- * @returns True if the user is already logged in
- */
-function checkLogin() {
-  // Perform a server JWT validation.
-  if (!window.localStorage.getItem('token')) {
-    window.localStorage.setItem('token', '');
-  }
-  return window.localStorage.getItem('token') === '' ? false : true;
-}
-const queryClient = new QueryClient();
+import { useQuery } from 'react-query';
+import { validateToken } from './apiCommunicator';
+import { useDispatch } from 'react-redux';
+import { signedIn } from './features/authenticateSlice';
 
 function App() {
-  useEffect(() => {
 
-  }, []);
+  const dispatch = useDispatch();
+  const checkLogin = async () => {
+    if (window.localStorage.getItem('token') !== undefined) {
+      const token = JSON.parse(window.localStorage.getItem('token')!);
+      return await validateToken(token['accessToken']);
+
+    }
+    return false;
+  }
+  // const {isSuccess, data} = useQuery(['auth'], () => checkLogin());
+
+  // if (isSuccess) {
+  //   if ((data as boolean) === true){
+  //     dispatch(signedIn);
+  //   }
+  // }
+
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <NavBar />
-        <Routes>
-          <Route path='/login'>
-            <Route index element={<CustomerSignIn />} />
-            <Route path='airline' element={<AirlinesSignIn />} />
-          </Route>
-          <Route path='/register'>
-            <Route index element={<CustomerSignUp />} />
-            <Route path='airline' element={<AirLineSignUp />} />
-          </Route>
-          <Route path='/' element={<Home />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
-          <Route path='*' element={<PageNotFound />} />
-        </Routes>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </BrowserRouter>
-
+    <>
+      <NavBar />
+      <Routes>
+        <Route path='/login'>
+          <Route index element={<CustomerSignIn />} />
+          <Route path='airline' element={<AirlinesSignIn />} />
+        </Route>
+        <Route path='/register'>
+          <Route index element={<CustomerSignUp />} />
+          <Route path='airline' element={<AirLineSignUp />} />
+        </Route>
+        <Route path='/' element={<Home />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
+        <Route path='*' element={<PageNotFound />} />
+      </Routes>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </>
   );
 }
 
