@@ -30,7 +30,6 @@ export default function Home() {
       return [INITIAL_SEARCH_MESSAGE];
     }
     const foundAirports = await findAirports(term);
-    console.log(foundAirports);
     
     return foundAirports.matchedAirports.length === 0 ? [NO_AIRPORTS_FOUND] : foundAirports.matchedAirports.map((matchedAirport) => `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`);
   };

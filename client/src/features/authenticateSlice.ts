@@ -13,7 +13,7 @@ export const authenticateSlice = createSlice({
     name: 'authenticate',
     initialState,
     reducers: {
-        signedIn: state => {
+        signedIn: state => {            
             state.isAuth = true;
         },
 
