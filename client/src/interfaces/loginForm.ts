@@ -6,7 +6,7 @@ export interface SignInForm {
     username: string;
     password: string;
     rememberMe: boolean;
-    loginType: string; // Could be "airline" or "customer".
+    loginType: "CUSTOMER" | "AIRLINE" ; // Could be "airline" or "customer".
   }
 
 /**
@@ -15,4 +15,10 @@ export interface SignInForm {
 export interface SignInResponse {
     username: string;
     token: string;
+}
+
+export interface ValidateCredentials {
+  username: string;
+  token: string;
+  type: "CUSTOMER" | "AIRLINE";
 }

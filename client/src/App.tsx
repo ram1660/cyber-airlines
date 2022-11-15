@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './styles/App.css';
 import NavBar from './components/ui/NavBar';
@@ -14,6 +13,8 @@ import { useQuery } from 'react-query';
 import { validateToken } from './apiCommunicator';
 import { useDispatch } from 'react-redux';
 import { signedIn } from './features/authenticateSlice';
+import { ValidateCredentials } from './interfaces/loginForm';
+import { setAirlineUser, setCustomerUser } from './features/userSlice';
 
 function App() {
 
@@ -21,18 +22,26 @@ function App() {
   const checkLogin = async () => {
     if (window.localStorage.getItem('token') !== undefined) {
       const token = JSON.parse(window.localStorage.getItem('token')!);
-      return await validateToken(token['accessToken']);
+      const userIdentity: ValidateCredentials = {
+        token: token['accessToken'],
+        type: token['type'],
+        username: token['username']
+      };
+      userIdentity.type === 'CUSTOMER' ? dispatch(setCustomerUser()) : dispatch(setAirlineUser());
+      return await validateToken(userIdentity);
 
     }
     return false;
   }
-  // const {isSuccess, data} = useQuery(['auth'], () => checkLogin());
+  const { isSuccess, data } = useQuery(['auth'], () => checkLogin());
 
-  // if (isSuccess) {
-  //   if ((data as boolean) === true){
-  //     dispatch(signedIn);
-  //   }
-  // }
+  if (isSuccess) {
+    console.log(data);
+
+    if ((data as boolean) === true) {
+      dispatch(signedIn());
+    }
+  }
 
   return (
     <>
@@ -49,7 +58,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/home' element={<Home />} />
         <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
-        <Route path='*' element={<PageNotFound />} />
+        <Route path='*' element={<PageNotFound/>} />
       </Routes>
       <ReactQueryDevtools initialIsOpen={false} />
     </>

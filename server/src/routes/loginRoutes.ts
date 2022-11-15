@@ -8,7 +8,7 @@ interface LoginRequest {
   username: string;
   password: string;
   rememberMe: boolean;
-  loginType: string; // Could be "airline" or "customer".
+  loginType: "CUSTOMER" | "AIRLINE"; // Could be "airline" or "customer".
 }
 
 interface LoginResponse {
@@ -35,7 +35,7 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Oops! Looks like you are missing credentials.' });
   }
   // Check if it's a customer or an airline and handle the request accordingly.
-  if (loginRequest.loginType === 'airline') {
+  if (loginRequest.loginType === 'AIRLINE') {
     if (await isAirlineExists(loginRequest.username) === false) {
       return res.status(401).json({ message: 'Oops! The username or the password are incorrect!' });
     }
@@ -46,7 +46,7 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
     let airlineTokens: LoginResponse = {
       accessToken: '',
       refreshToken: '',
-      username: ''
+      username: '',
     };
     if (loginRequest.rememberMe === true) {
       airlineTokens.refreshToken = generateRefreshToken({
@@ -56,7 +56,7 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
     }
     airlineTokens.accessToken = generateAirlineAccessToken({ username: loginRequest.username });
     res.status(200).json(airlineTokens);
-  } else if (loginRequest.loginType === 'customer') {
+  } else if (loginRequest.loginType === 'CUSTOMER') {
     if (await isCustomerExists(loginRequest.username) === false) {
       return res.status(401).json({ message: 'Oops! The username or the password are incorrect!' });
     }
@@ -115,15 +115,15 @@ loginRouter.post('/refreshToken', async (req: Request, res: Response) => {
 
 });
 
-loginRouter.get('/api/validate', (req, res) => {
+loginRouter.post('/api/validate', (req, res) => {
   const { token, username, type } = req.body;
   if (type === 'CUSTOMER') {
-    if (jwt.verify(token, process.env['CUSTOMER_TOKEN_SECRET'] as string)) {
-
-    }
+      jwt.verify(token, process.env['CUSTOMER_TOKEN_SECRET'] as string, (error: jwt.VerifyErrors | null) => {
+        error ? res.json({ isValid: false }) : res.json({ isValid: true });
+      });
 
   } else if (type === 'AIRLINE') {
-    jwt.verify(token, process.env['AIRLINE_TOKEN_SECRET'] as string, (error) => {
+    jwt.verify(token, process.env['AIRLINE_TOKEN_SECRET'] as string, (error: jwt.VerifyErrors | null) => {
       error ? res.json({ isValid: false }) : res.json({ isValid: true });
     });
   }
