@@ -19,6 +19,7 @@ import Response from '../../../interfaces/response';
 import { useNavigate } from 'react-router-dom';
 import { selectAuth, signedIn } from '../../../features/authenticateSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { setCustomerUser } from '../../../features/userSlice';
 
 const theme = createTheme();
 
@@ -37,9 +38,11 @@ export default function CustomerSignIn() {
   
   const loginMutation = useMutation(signInCustomer, {
     onSuccess(data, variables, context) {
-      localStorage.setItem('token', JSON.stringify(data.message));
+      const identity = data.message as any;
+      identity['type'] = 'CUSTOMER';
+      localStorage.setItem('token', JSON.stringify(identity));
       dispatch(signedIn());
-      console.log(authSelector);
+      dispatch(setCustomerUser());
       
       setTimeout(() => {
         navigator('/');
@@ -52,7 +55,7 @@ export default function CustomerSignIn() {
     const form: SignInForm = {
       username: data.get('username')?.toString()!,
       password: data.get('password')?.toString()!,
-      loginType: 'customer',
+      loginType: 'CUSTOMER',
       rememberMe: data.has('remember')
     };
     loginMutation.mutate(form);

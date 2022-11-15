@@ -14,14 +14,10 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-
         <BrowserRouter>
-
           <App />
-
         </BrowserRouter>
       </QueryClientProvider>
-
     </Provider>
   </React.StrictMode>
 );
