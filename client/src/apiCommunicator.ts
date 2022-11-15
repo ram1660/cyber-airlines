@@ -1,7 +1,7 @@
 import { AirlineRegisterForm, CustomerRegisterForm } from "./interfaces/registerForms";
 import Response from './interfaces/response';
 import axios from "axios";
-import { SignInForm } from "./interfaces/loginForm";
+import { SignInForm, ValidateCredentials } from "./interfaces/loginForm";
 import { AirlineData } from "./components/Pages/AirlineProfile";
 import SearchAirportsResponse from "./interfaces/searchAirportsResponse";
 import { FlightDetailsResponse } from "./interfaces/AvailableFlights";
@@ -41,7 +41,7 @@ export async function findFlights(originAirport: string, destinationAirport: str
     return response;
 }
 
-export async function validateToken(token: string): Promise<boolean> {
-    const isValid: boolean = await (await communicator.get('/api/validate')).data['isValid'];
+export async function validateToken(userIdentity: ValidateCredentials): Promise<boolean> {
+    const isValid: boolean = await (await communicator.post('/api/validate', userIdentity)).data['isValid'];
     return isValid;
 }
