@@ -15,12 +15,13 @@ import { useDispatch } from 'react-redux';
 import { signedIn } from './features/authenticateSlice';
 import { ValidateCredentials } from './interfaces/loginForm';
 import { setAirlineUser, setCustomerUser } from './features/userSlice';
+import LogoutScreen from './components/Pages/registersAndLogins/LogoutScreen';
 
 function App() {
 
   const dispatch = useDispatch();
   const checkLogin = async () => {
-    if (window.localStorage.getItem('token') !== undefined) {
+    if (window.localStorage.getItem('token') !== null) {
       const token = JSON.parse(window.localStorage.getItem('token')!);
       const userIdentity: ValidateCredentials = {
         token: token['accessToken'],
@@ -58,6 +59,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/home' element={<Home />} />
         <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
+        <Route path='/logout' element={<LogoutScreen/>}/>
         <Route path='*' element={<PageNotFound/>} />
       </Routes>
       <ReactQueryDevtools initialIsOpen={false} />
