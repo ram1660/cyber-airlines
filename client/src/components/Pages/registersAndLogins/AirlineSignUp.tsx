@@ -24,7 +24,6 @@ export default function AirLineSignUp() {
   }
   const registerMutation = useMutation(sendRegisterForm, {
     onSuccess: (data, variables, context) => {
-      console.log(data);
       setTimeout(() => {
         navigator('/login/airline');
       }, 5000);
@@ -36,10 +35,6 @@ export default function AirLineSignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
     const form: AirlineRegisterForm = {
       airlineName: data.get('airlineName')?.toString()!,
       username: data.get('username')?.toString()!,
@@ -71,7 +66,7 @@ export default function AirLineSignUp() {
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="Airline name"
+                  name="airlineName"
                   required
                   fullWidth
                   id="airlineName"

@@ -37,8 +37,6 @@ function App() {
   const { isSuccess, data } = useQuery(['auth'], () => checkLogin());
 
   if (isSuccess) {
-    console.log(data);
-
     if ((data as boolean) === true) {
       dispatch(signedIn());
     }
