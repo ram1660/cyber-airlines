@@ -12,18 +12,55 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signIn } from '../../../apiCommunicator';
+import { selectAuth, signedIn } from '../../../features/authenticateSlice';
+import { SignInForm } from '../../../interfaces/loginForm';
+import { useMutation } from 'react-query';
+import { setAirlineUser } from '../../../features/userSlice';
+import Response from '../../../interfaces/response';
 const theme = createTheme();
 
 export default function AirlinesSignIn() {
+  const navigator = useNavigate();
+  const dispatch = useDispatch();
+  const authSelector = useSelector(selectAuth);
+  const signInAirline = async (form: SignInForm) => {
+    return await signIn(form);
+  };
+
+  React.useEffect(() => {
+    if (authSelector === true) {
+      navigator('/');
+    }
+  });
+
+  const loginMutation = useMutation(signInAirline, {
+    onSuccess(data, variables, context) {
+      console.log(data);
+      
+      const identity = data.message as any;
+      identity['type'] = 'AIRLINE';
+      localStorage.setItem('token', JSON.stringify(identity));
+      dispatch(signedIn());
+      dispatch(setAirlineUser());
+
+      setTimeout(() => {
+        navigator('/');
+      }, 5000);
+    },
+  });
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    
+    const form: SignInForm = {
+      username: data.get('username')?.toString()!,
+      password: data.get('password')?.toString()!,
+      loginType: 'AIRLINE',
+      rememberMe: data.has('remember')
+    };
+    loginMutation.mutate(form);
   };
 
   return (
@@ -69,31 +106,44 @@ export default function AirlinesSignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-              <Button
-                type="submit"
-                fullWidth
-                component={RouterLink}
-                to='/'
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
+            <Button
+              type="submit"
+              fullWidth
+              component={RouterLink}
+              to='/'
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/register/airline" variant="body2">
+                  Don't have an account? Sign Up
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Link href="/register/airline" variant="body2">
-                Don't have an account? Sign Up
-              </Link>
-            </Grid>
-          </Grid>
+          </Box>
+          <Typography component='p' variant='body1'>{
+            loginMutation.isLoading ? (
+              'Please wait.'
+            ) : null}
+            {
+              loginMutation.isError ? (
+                `The username or the password are incorrect. Please try again. \n ${(loginMutation.error as Response).message}`
+              ) : null}
+            {
+              loginMutation.isSuccess ? (
+                'Login successfully! Redirecting to main menu.'
+              ) : null}
+          </Typography>
         </Box>
-      </Box>
-    </Container>
+      </Container>
     </ThemeProvider >
   );
 }
