@@ -133,7 +133,7 @@ export default function CustomerSignIn() {
             ) : null}
             {
               loginMutation.isError ? (
-                `Could not perform register. Please try again. \n ${(loginMutation.error as Response).message}`
+                `The username or the password are incorrect. Please try again. \n ${(loginMutation.error as Response).message}`
               ) : null}
             {
               loginMutation.isSuccess ? (

@@ -46,7 +46,7 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
     let airlineTokens: LoginResponse = {
       accessToken: '',
       refreshToken: '',
-      username: '',
+      username: loginRequest.username,
     };
     if (loginRequest.rememberMe === true) {
       airlineTokens.refreshToken = generateRefreshToken({
@@ -55,7 +55,7 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
       });
     }
     airlineTokens.accessToken = generateAirlineAccessToken({ username: loginRequest.username });
-    res.status(200).json(airlineTokens);
+    res.json(airlineTokens);
   } else if (loginRequest.loginType === 'CUSTOMER') {
     if (await isCustomerExists(loginRequest.username) === false) {
       return res.status(401).json({ message: 'Oops! The username or the password are incorrect!' });
@@ -78,7 +78,7 @@ loginRouter.post('/login', async (req: Request, res: Response) => {
     }
     customerTokens.accessToken = generateCustomerAccessToken({ username: loginRequest.username });
     customerTokens.username = loginRequest.username;
-    res.status(200).json(customerTokens);
+    res.json(customerTokens);
   } else {
     res.status(403).json({ message: 'It seems like you sent a bad request. Please try again.' });
   }
@@ -109,7 +109,7 @@ loginRouter.post('/refreshToken', async (req: Request, res: Response) => {
   } else {
     newAccessToken = generateAirlineAccessToken({ username: username });
   }
-  res.status(200).json({
+  res.json({
     accessToken: newAccessToken
   });
 
