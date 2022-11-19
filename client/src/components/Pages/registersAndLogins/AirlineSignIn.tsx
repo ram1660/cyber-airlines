@@ -37,7 +37,7 @@ export default function AirlinesSignIn() {
   });
 
   const loginMutation = useMutation(signInAirline, {
-    onSuccess(data, variables, context) {
+    onSuccess: (data, variables, context) => {
       console.log(data);
       
       const identity = data.message as any;
@@ -51,6 +51,7 @@ export default function AirlinesSignIn() {
       }, 5000);
     },
   });
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -109,8 +110,6 @@ export default function AirlinesSignIn() {
             <Button
               type="submit"
               fullWidth
-              component={RouterLink}
-              to='/'
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >

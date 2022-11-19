@@ -11,11 +11,6 @@ const INITIAL_SEARCH_MESSAGE = 'Start typing to find an airport!';
 const NO_AIRPORTS_FOUND = 'No airports found has been found with this name.';
 
 export default function Home() {
-  // Used for the list UI.
-
-
-  const originInputRef = useRef(null);
-  const destinationInputRef = useRef(null);
   
   // Used for debouncing the search.
   const [originAirportInput, setOriginAirportInput] = useState('');
@@ -30,13 +25,13 @@ export default function Home() {
       return [INITIAL_SEARCH_MESSAGE];
     }
     const foundAirports = await findAirports(term);
-    
+
     return foundAirports.matchedAirports.length === 0 ? [NO_AIRPORTS_FOUND] : foundAirports.matchedAirports.map((matchedAirport) => `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`);
   };
 
   const originSearchQuery = useQuery(['originSearch', originDebounce], () => getAirports(originDebounce));
   const destinationSearchQuery = useQuery(['destinationSearch', destinationDebounce], () => getAirports(destinationDebounce));
-  
+
   // Listening for a change in either the origin input or the destination input and updating the internal value before debouncing it.
   const handleSearch = (event: React.SyntheticEvent, value: string, reason: string) => {
     if (event.currentTarget.id === 'origin-search') {
@@ -51,7 +46,7 @@ export default function Home() {
   };
 
   const handleSearchClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    
+
   };
   return (
     <>
@@ -60,7 +55,7 @@ export default function Home() {
 
         <Grid container spacing={5}>
           <Grid item xs={12} mb={5}>
-              <Typography variant='h3' component='h2'>Welcome to {WEBSITE_NAME}! Where do you want to fly?</Typography>
+            <Typography variant='h3' component='h2'>Welcome to {WEBSITE_NAME}! Where do you want to fly?</Typography>
           </Grid>
           <Grid item xs={6}>
             <Autocomplete
@@ -82,8 +77,32 @@ export default function Home() {
               id='destination-search'
               filterOptions={(x) => x} />
           </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="departure-date"
+              label="Departure date"
+              type="date"
+              defaultValue={Date.now()}
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="arrival-date"
+              label="Arrival date"
+              type="date"
+              defaultValue={Date.now()}
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
           <Grid item xs={12} textAlign='center'>
-            <Button variant='contained' size='large' endIcon={<SearchIcon/>} onClick={handleSearchClick}>Find flights</Button>
+            <Button variant='contained' size='large' endIcon={<SearchIcon />} onClick={handleSearchClick}>Find flights</Button>
           </Grid>
         </Grid>
 
