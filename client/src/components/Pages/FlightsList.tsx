@@ -1,19 +1,19 @@
 import React from 'react';
-import { useInfiniteQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { FlightDetailsResponse } from '../../interfaces/AvailableFlights';
 
 
-export default function FlightsList(flights: FlightDetailsResponse) {
+export default function FlightsList(dates: {departureDate: string, arrivalDate: string}) {
 
   const fetchFlights = () => {
-    
+
   }
-  const flightsQuery = useInfiniteQuery('flights');
+  const flightsQuery = useQuery(['matchedFlights', dates], fetchFlights);
 
-    return (
-      <></>
-        // <Grid>
+  return (
+    <></>
+    // <Grid>
 
-        // </Grid>
+    // </Grid>
   )
 }
