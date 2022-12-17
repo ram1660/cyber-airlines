@@ -1,14 +1,20 @@
 import React from 'react';
 import { useQuery } from 'react-query';
+import { findFlights } from '../../apiCommunicator';
 import { FlightDetailsResponse } from '../../interfaces/AvailableFlights';
 
+interface PlanningData {
+  origin: string, 
+  destination: string,
+  startingDate: Date, 
+  returnDate: Date
+}
+export default function FlightsList(planningData: PlanningData) {
 
-export default function FlightsList(dates: {departureDate: string, arrivalDate: string}) {
-
-  const fetchFlights = () => {
-
+  const fetchFlights = async () => {
+    return await findFlights(planningData.origin, planningData.destination, planningData.startingDate.toISOString(), planningData.returnDate.toISOString())
   }
-  const flightsQuery = useQuery(['matchedFlights', dates], fetchFlights);
+  const {data, isSuccess, isError} = useQuery(['matchedFlights', planningData], fetchFlights);
 
   return (
     <></>
