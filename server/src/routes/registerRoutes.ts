@@ -29,7 +29,7 @@ registerRouter.post('/register/customer', async (req: Request, res: Response) =>
       message: 'Incorrect form.'
     });
   }
-  if (await isAirlineExists(customerForm.username) === true || customerForm.firstName === '' || customerForm.lastName === '') {
+  if (await isCustomerExists(customerForm.username) === true || customerForm.firstName === '' || customerForm.lastName === '') {
     return res.status(403).json({
       message: 'There is already a customer with that username.'
     });

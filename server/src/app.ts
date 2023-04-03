@@ -20,6 +20,16 @@ app.use(searchRouter);
 app.use(profileRouter);
 
 app.listen(process.env.PORT, async () => {
+    console.log('Starting server.');
+    console.log('Reading dotEnv file...');
+    console.log('Grabing checking tokens existens..');
+    if (process.env['CUSTOMER_TOKEN_SECRET'] === undefined ) {
+        throw Error('No customer token. Please add the key "CUSTOMER_TOKEN_SECRET" with any value you would like to the .env file.');
+    }
+    if (process.env['AIRLINE_TOKEN_SECRET'] === undefined) {
+        throw Error('No customer token. Please add the key "AIRLINE_TOKEN_SECRET" with any value you would like to the .env file.');
+    }
+    console.log('Found secret tokens.');
     await startDB();
     console.log('Database started.');
     console.log('Starting server at http://localhost:' + process.env['PORT'] as string);
