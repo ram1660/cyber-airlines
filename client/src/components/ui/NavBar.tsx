@@ -35,7 +35,7 @@ export default function NavBar() {
     if (authSelector === true) {
         profileSettings.push({ description: 'Profile', url: '/profile' });
         if (userSelector === 'AIRLINE') {
-            profileSettings.push({description: 'Edit Flights', url: '/edit/flights'});
+            profileSettings.push({ description: 'Edit Flights', url: '/edit/flights' });
         } else {
             profileSettings.push({ description: 'My orders', url: '/orders' });
         }

@@ -110,8 +110,7 @@ export default function Home() {
               id="starting-date"
               label="Starting date"
               type="date"
-              defaultValue={Date.now()}
-              value={startingDate}
+              value={startingDate === null ? Date.now() : startingDate}
               onChange={onDateChange}
               fullWidth
               InputLabelProps={{
@@ -125,8 +124,7 @@ export default function Home() {
               label="Return date"
               type="date"
               onChange={onDateChange}
-              value={returnDate}
-              defaultValue={Date.now()}
+              value={returnDate === null ? Date.now() : returnDate}
               fullWidth
               InputLabelProps={{
                 shrink: true,

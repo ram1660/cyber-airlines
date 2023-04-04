@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom';
-import './styles/App.css';
 import NavBar from './components/ui/NavBar';
 import CustomerSignIn from './components/Pages/registersAndLogins/CustomerSignIn';
 import CustomerSignUp from './components/Pages/registersAndLogins/CustomerSignUp';
@@ -16,6 +15,7 @@ import { signedIn } from './features/authenticateSlice';
 import { ValidateCredentials } from './interfaces/loginForm';
 import { setAirlineUser, setCustomerUser } from './features/userSlice';
 import LogoutScreen from './components/Pages/registersAndLogins/LogoutScreen';
+import { useEffect } from 'react';
 
 function App() {
 
@@ -35,12 +35,14 @@ function App() {
     return false;
   }
   const { isSuccess, data } = useQuery(['auth'], () => checkLogin());
-
-  if (isSuccess) {
-    if ((data as boolean) === true) {
-      dispatch(signedIn());
+  useEffect(() => {
+    if (isSuccess) {
+      if ((data as boolean) === true) {
+        dispatch(signedIn());
+      }
     }
-  }
+  }, [isSuccess]);
+
 
   return (
     <>
