@@ -1,12 +1,14 @@
 import { Autocomplete, Box, Button, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 import React, { useRef, useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
 import SearchIcon from '@mui/icons-material/Search';
 import { useQuery } from 'react-query';
 import { findAirports } from '../../apiCommunicator';
 import { WEBSITE_NAME } from '../../globals'
 import useDebounce from '../../hooks/useDebounce';
 import FlightsList from './FlightsList';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const INITIAL_SEARCH_MESSAGE = 'Start typing to find an airport!';
 const NO_AIRPORTS_FOUND = 'No airports found has been found with this name.';
@@ -21,33 +23,34 @@ export default function Home() {
   const destinationDebounce = useDebounce(destinationAirportInput);
 
   const [isValidData, setIsValidData] = useState(false);
-  const [startingDate, setStartingDate] = useState<Date | null>(null);
-  const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [startingDate, setStartingDate] = useState<Dayjs | null>(null);
+  const [returnDate, setReturnDate] = useState<Dayjs | null>(null);
 
-  const onDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.id === 'starting-date') {
-      if (returnDate === null) {
-        setStartingDate(event.target.valueAsDate);
-      } else {
-        const startingDate = event.target.valueAsDate;
-        if (startingDate!.getTime() > returnDate.getTime()) {
-          return;
-        }
-        setStartingDate(startingDate);
-      }
+  const onReturnChange = (newDate: any) => {
+    if (startingDate === null) {
+        // If the return date isn't set we can set to any date we would like but, after today's date.
+      if (dayjs().add(1, 'day').isBefore(dayjs(newDate)))
+        setReturnDate(newDate);
     } else {
-      if (startingDate === null) {
-        setReturnDate(event.target.valueAsDate);
-      } else {
-        const returningDate = event.target.valueAsDate;
-        if (returningDate!.getTime() > startingDate.getTime()) {
-          return;
-        }
-        setReturnDate(returningDate);
-      }
+      if (startingDate.isAfter(newDate))
+        return;
+      setReturnDate(dayjs(newDate));
     }
   }
 
+  const onStartChange = (newDate: any) => {
+      if (returnDate === null) {
+        // If the return date isn't set we can set to any date we would like but, after today's date.
+        if (dayjs().isBefore(newDate) === true)
+          setStartingDate(dayjs(newDate));
+      } else {
+        if (returnDate.isAfter(newDate)) {
+          return;
+        }
+        setStartingDate(dayjs(newDate));
+      }
+  }
+  
   const getAirports = async (term: string) => {
     if (term === '') {
       return [INITIAL_SEARCH_MESSAGE];
@@ -106,7 +109,10 @@ export default function Home() {
               filterOptions={(x) => x} />
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <DatePicker label="Starting date" value={startingDate} format='day / mont / year'
+            onChange={onStartChange} 
+            />
+            {/* <TextField
               id="starting-date"
               label="Starting date"
               type="date"
@@ -116,10 +122,13 @@ export default function Home() {
               InputLabelProps={{
                 shrink: true,
               }}
-            />
+            /> */}
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <DatePicker label="Return date"
+            value={returnDate}
+            onChange={onReturnChange}/>
+            {/* <TextField
               id="return-date"
               label="Return date"
               type="date"
@@ -129,7 +138,7 @@ export default function Home() {
               InputLabelProps={{
                 shrink: true,
               }}
-            />
+            /> */}
           </Grid>
           <Grid item xs={12} textAlign='center'>
             <Button variant='contained' size='large' endIcon={<SearchIcon />} onClick={handleSearchClick}>Find flights</Button>
