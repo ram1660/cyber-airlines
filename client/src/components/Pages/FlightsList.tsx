@@ -2,12 +2,13 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { findFlights } from '../../apiCommunicator';
 import { FlightDetailsResponse } from '../../interfaces/AvailableFlights';
+import dayjs from 'dayjs';
 
 interface PlanningData {
   origin: string, 
   destination: string,
-  startingDate: Date, 
-  returnDate: Date
+  startingDate: dayjs.Dayjs, 
+  returnDate: dayjs.Dayjs
 }
 export default function FlightsList(planningData: PlanningData) {
 
