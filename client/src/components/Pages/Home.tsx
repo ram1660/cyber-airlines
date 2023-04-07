@@ -28,7 +28,7 @@ export default function Home() {
 
   const onReturnChange = (newDate: any) => {
     if (startingDate === null) {
-        // If the return date isn't set we can set to any date we would like but, after today's date.
+      // If the return date isn't set we can set to any date we would like but, after today's date.
       if (dayjs().add(1, 'day').isBefore(dayjs(newDate)))
         setReturnDate(newDate);
     } else {
@@ -39,18 +39,9 @@ export default function Home() {
   }
 
   const onStartChange = (newDate: any) => {
-      if (returnDate === null) {
-        // If the return date isn't set we can set to any date we would like but, after today's date.
-        if (dayjs().isBefore(newDate) === true)
-          setStartingDate(dayjs(newDate));
-      } else {
-        if (returnDate.isAfter(newDate)) {
-          return;
-        }
-        setStartingDate(dayjs(newDate));
-      }
+    setStartingDate(dayjs(newDate));
   }
-  
+
   const getAirports = async (term: string) => {
     if (term === '') {
       return [INITIAL_SEARCH_MESSAGE];
@@ -109,36 +100,18 @@ export default function Home() {
               filterOptions={(x) => x} />
           </Grid>
           <Grid item xs={6}>
-            <DatePicker label="Starting date" value={startingDate} format='day / mont / year'
-            onChange={onStartChange} 
+            <DatePicker label="Starting date" value={startingDate} format='DD/MM/YYYY'
+              minDate={dayjs()}
+              onChange={onStartChange}
             />
-            {/* <TextField
-              id="starting-date"
-              label="Starting date"
-              type="date"
-              value={startingDate === null ? Date.now() : startingDate}
-              onChange={onDateChange}
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-            /> */}
           </Grid>
           <Grid item xs={6}>
             <DatePicker label="Return date"
-            value={returnDate}
-            onChange={onReturnChange}/>
-            {/* <TextField
-              id="return-date"
-              label="Return date"
-              type="date"
-              onChange={onDateChange}
-              value={returnDate === null ? Date.now() : returnDate}
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-            /> */}
+
+              value={startingDate?.isAfter(returnDate) ? returnDate}
+              format='DD/MM/YYYY'
+              minDate={startingDate !== null ? startingDate.add(1, 'day') : undefined}
+              onChange={onReturnChange}/>
           </Grid>
           <Grid item xs={12} textAlign='center'>
             <Button variant='contained' size='large' endIcon={<SearchIcon />} onClick={handleSearchClick}>Find flights</Button>
