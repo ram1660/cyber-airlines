@@ -1,4 +1,4 @@
-interface FlightDetails {
+export interface FlightDetails {
     operator: string;
     origin: string;
     destination: string;
@@ -7,4 +7,6 @@ interface FlightDetails {
 }
 export interface FlightDetailsResponse {
     flights: FlightDetails[];
+    page: number;
+    nextPage: number;
 }
