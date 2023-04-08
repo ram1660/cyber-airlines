@@ -3,7 +3,7 @@ import { isError, useInfiniteQuery } from '@tanstack/react-query';
 import { findFlights } from '../../apiCommunicator';
 import { FlightDetails, FlightDetailsResponse } from '../../interfaces/AvailableFlights';
 import dayjs from 'dayjs';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 interface PlanningData {
   origin: string,
@@ -12,38 +12,41 @@ interface PlanningData {
   returnDate: dayjs.Dayjs
 }
 
+// When the api is ready for pulling flights from the server test this component to make sure data is getting orginized correctly.
 export default function FlightsList(planningData: PlanningData) {
-
-  const [matchedFlights, setMatchedFlights] = React.useState<FlightDetails[]>([]);
-
-  const fetchFlights = async ({ pageParams = 0 }) => {
-    const data: FlightDetailsResponse = await findFlights(planningData.origin, planningData.destination, planningData.startingDate.toISOString(),
-      planningData.returnDate.toISOString(), pageParams);
-
-    matchedFlights.concat(data.flights);
-    setMatchedFlights(matchedFlights);
-    return data;
+  const fetchFlights = async ({ pageParam = 1 }) => {
+    return await findFlights(planningData.origin, planningData.destination, planningData.startingDate.toISOString(),
+      planningData.returnDate.toISOString(), pageParam);
   }
 
   const {
     data,
     fetchNextPage,
     hasNextPage,
-    isFetching,
-    isLoading,
-    error,
-  } = useInfiniteQuery('matchedFlights', fetchFlights, {
+    isFetchingNextPage,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ['matchedFlights'],
     getNextPageParam: (lastPage) => lastPage.nextPage,
-    
+    queryFn: fetchFlights
   });
 
+  const handleLoadMore = () => {
+    if (isFetchingNextPage)
+      return <Typography variant='h3' component={'h3'}>Loading more flights! Please hold on!</Typography>;
+    if (isError) 
+      return <Typography variant='h3' component={'h3'}>Oops! It seems like there is an error!</Typography>;
+    if (hasNextPage)
+      return <Button onClick={() => fetchNextPage()} variant="contained">Load more flights</Button>
+    return null;
+  }
+
   return (
-    <TableContainer component={Paper} onScroll={ }>
+    <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Company</TableCell>
-            <TableCell align="right">Calories</TableCell>
             <TableCell align="right">Origin&nbsp;(g)</TableCell>
             <TableCell align="right">Destination&nbsp;(g)</TableCell>
             <TableCell align="right">Departure time&nbsp;(g)</TableCell>
@@ -52,15 +55,19 @@ export default function FlightsList(planningData: PlanningData) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.pages.map((row, i: number) => (
+          {data?.pages.map((row, i: number) => row.flights.map((singleFlight: FlightDetails) => {
             <TableRow
-              key={row}
+              key={singleFlight.operator + i}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
+              <TableCell>{singleFlight.operator}</TableCell>
+              <TableCell>{singleFlight.origin}</TableCell>
+              <TableCell>{singleFlight.destination}</TableCell>
+              <TableCell>{singleFlight.departureTime}</TableCell>
+              <TableCell>{singleFlight.arrivalTime}</TableCell>
             </TableRow>
-          ))}
-          {isLoading ? <Typography variant='h3' component={'h3'}>Loading more flights! Please hold on!</Typography> : null}
-          {isError ? <Typography variant='h3' component={'h3'}>Oops! It seems like there is an error!</Typography> : null}
+          }))}
+          {handleLoadMore()}
         </TableBody>
       </Table>
     </TableContainer>
