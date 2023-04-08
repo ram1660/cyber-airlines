@@ -2,7 +2,7 @@ import { Avatar, CssBaseline, Skeleton, Typography } from '@mui/material';
 import AirlinesIcon from '@mui/icons-material/Airlines';
 import { Container } from '@mui/system';
 import { getAirlineProfile } from '../../apiCommunicator';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 export interface AirlineData {

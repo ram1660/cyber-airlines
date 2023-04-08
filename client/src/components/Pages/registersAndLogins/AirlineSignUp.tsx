@@ -12,7 +12,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { registerAirline } from '../../../apiCommunicator';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { AirlineRegisterForm } from '../../../interfaces/registerForms';
 
 const theme = createTheme();

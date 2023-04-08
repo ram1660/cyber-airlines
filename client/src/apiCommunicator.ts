@@ -36,8 +36,8 @@ export async function findAirports(searchTerm: string): Promise<SearchAirportsRe
     return response;
 }
 
-export async function findFlights(originAirport: string, destinationAirport: string, startDate: string, returnDate: string): Promise<FlightDetailsResponse> {
-    const response = await (await communicator.get('/search/flights?origin=' + originAirport + '&destination=' + destinationAirport)).data as FlightDetailsResponse;
+export async function findFlights(originAirport: string, destinationAirport: string, startDate: string, returnDate: string, page: number): Promise<FlightDetailsResponse> {
+    const response = await (await communicator.get('/search/flights?origin=' + originAirport + '&destination=' + destinationAirport + '&page=' + page)).data as FlightDetailsResponse;
     return response;
 }
 

@@ -3,12 +3,13 @@ import { Container } from '@mui/system';
 import React, { useRef, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import SearchIcon from '@mui/icons-material/Search';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { findAirports } from '../../apiCommunicator';
 import { WEBSITE_NAME } from '../../globals'
 import useDebounce from '../../hooks/useDebounce';
-import FlightsList from './FlightsList';
+import FlightsList from '../matchedFlights/FlightsList';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { WidthFull } from '@mui/icons-material';
 
 const INITIAL_SEARCH_MESSAGE = 'Start typing to find an airport!';
 const NO_AIRPORTS_FOUND = 'No airports found has been found with this name.';
@@ -103,16 +104,18 @@ export default function Home() {
             <DatePicker label="Starting date" value={startingDate} format='DD/MM/YYYY'
               minDate={dayjs()}
               onChange={onStartChange}
+              sx={{ width: '100%' }}
             />
           </Grid>
-          <Grid item xs={6}>
+          {/* Support for two way flights will be comming soon */}
+          {/* <Grid item xs={6}>
             <DatePicker label="Return date"
-
-              value={startingDate?.isAfter(returnDate) ? returnDate}
+              sx={{ width: '100%' }}
+              value={returnDate}
               format='DD/MM/YYYY'
               minDate={startingDate !== null ? startingDate.add(1, 'day') : undefined}
-              onChange={onReturnChange}/>
-          </Grid>
+              onChange={onReturnChange} />
+          </Grid> */}
           <Grid item xs={12} textAlign='center'>
             <Button variant='contained' size='large' endIcon={<SearchIcon />} onClick={handleSearchClick}>Find flights</Button>
           </Grid>

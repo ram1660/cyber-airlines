@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signIn } from '../../../apiCommunicator';
 import { selectAuth, signedIn } from '../../../features/authenticateSlice';
 import { SignInForm } from '../../../interfaces/loginForm';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { setAirlineUser } from '../../../features/userSlice';
 import Response from '../../../interfaces/response';
 const theme = createTheme();
