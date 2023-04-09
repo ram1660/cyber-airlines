@@ -1,7 +1,6 @@
-import React from 'react';
-import { isError, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { findFlights } from '../../apiCommunicator';
-import { FlightDetails, FlightDetailsResponse } from '../../interfaces/AvailableFlights';
+import { FlightDetails } from '../../interfaces/AvailableFlights';
 import dayjs from 'dayjs';
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 

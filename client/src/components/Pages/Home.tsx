@@ -1,19 +1,11 @@
-import { Autocomplete, Box, Button, CssBaseline, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, CssBaseline, Grid, Typography } from '@mui/material';
 import { Container } from '@mui/system';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import SearchIcon from '@mui/icons-material/Search';
-import { useQuery } from '@tanstack/react-query';
-import { findAirports } from '../../apiCommunicator';
 import { WEBSITE_NAME } from '../../globals'
-import useDebounce from '../../hooks/useDebounce';
-import FlightsList from '../matchedFlights/FlightsList';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { WidthFull } from '@mui/icons-material';
 import AirportSearchBar from '../AirportSearchBar';
-
-const INITIAL_SEARCH_MESSAGE = 'Start typing to find an airport!';
-const NO_AIRPORTS_FOUND = 'No airports found has been found with this name.';
 
 export default function Home() {
 
@@ -43,16 +35,6 @@ export default function Home() {
     setStartingDate(dayjs(newDate));
   }
 
-  const getAirports = async (term: string) => {
-    if (term === '') {
-      return [INITIAL_SEARCH_MESSAGE];
-    }
-    const foundAirports = await findAirports(term);
-
-    return foundAirports.matchedAirports.length === 0 ? [NO_AIRPORTS_FOUND] : foundAirports.matchedAirports.map((matchedAirport) => `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`);
-  };
-
-
   // Listening for a change in either the origin input or the destination input and updating the internal value before debouncing it.
   const handleSearch = (event: React.SyntheticEvent, value: string, reason: string) => {
     if (event.currentTarget.id === 'origin-search') {
@@ -67,37 +49,24 @@ export default function Home() {
   };
 
   const handleSearchClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-
+    // 1. Get all the data from the fields.
+    // 2. Make an API call to get all matched flights.    
+    // 3. If there are no matched flights set the matchedFlights state (Haven't created yet),
+    // In which result of producing to the user a "No flights have been found.".
+    // 4. If there are pass to the FlightsList component to list from the API call through the state.
   };
   return (
     <>
       <CssBaseline />
       <Container component='main'>
-
         <Grid container spacing={5}>
           <Grid item xs={12} mb={5} mt={5}>
             <Typography variant='h3' component='h2'>Welcome to {WEBSITE_NAME}! Where do you want to fly?</Typography>
           </Grid>
           <Grid item xs={6}>
             <AirportSearchBar onSearchInput={handleSearch} searchAirportInput={originAirportInput} searchId='origin-search' searchLabel='Origin airport' />
-            {/* <Autocomplete
-              onInputChange={handleSearch}
-              freeSolo
-              getOptionDisabled={(option) => option === INITIAL_SEARCH_MESSAGE || option === NO_AIRPORTS_FOUND}
-              options={originSearchQuery.data === undefined ? [INITIAL_SEARCH_MESSAGE] : originSearchQuery.data}
-              getOptionLabel={(option) => option}
-              renderInput={(params) => <TextField {...params} label='Origin airport' />}
-              id='origin-search'
-              filterOptions={(x) => x} /> */}
           </Grid>
           <Grid item xs={6}>
-            {/* <Autocomplete onInputChange={handleSearch}
-              freeSolo
-              options={destinationSearchQuery.data === undefined ? [INITIAL_SEARCH_MESSAGE] : destinationSearchQuery.data}
-              getOptionDisabled={(option) => option === INITIAL_SEARCH_MESSAGE}
-              renderInput={(params) => <TextField {...params} label='Destination airport' />}
-              id='destination-search'
-              filterOptions={(x) => x} /> */}
             <AirportSearchBar onSearchInput={handleSearch} searchAirportInput={destinationAirportInput} searchId='destination-search' searchLabel='Destination airport' />
 
           </Grid>

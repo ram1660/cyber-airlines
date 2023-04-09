@@ -1,4 +1,4 @@
-import mongoose, { connect, Schema, model, Types, Model } from "mongoose";
+import { connect, Schema, model, Types } from "mongoose";
 
 
 // The main documents for the database.

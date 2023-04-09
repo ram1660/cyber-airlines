@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 import useDebounce from "../hooks/useDebounce";
 import { findAirports } from "../apiCommunicator";
 import { Autocomplete, TextField } from "@mui/material";
