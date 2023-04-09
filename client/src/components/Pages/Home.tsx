@@ -10,6 +10,7 @@ import useDebounce from '../../hooks/useDebounce';
 import FlightsList from '../matchedFlights/FlightsList';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { WidthFull } from '@mui/icons-material';
+import AirportSearchBar from '../AirportSearchBar';
 
 const INITIAL_SEARCH_MESSAGE = 'Start typing to find an airport!';
 const NO_AIRPORTS_FOUND = 'No airports found has been found with this name.';
@@ -18,26 +19,25 @@ export default function Home() {
 
   // Used for debouncing the search.
   const [originAirportInput, setOriginAirportInput] = useState('');
-  const originDebounce = useDebounce(originAirportInput);
 
   const [destinationAirportInput, setDestinationAirportInput] = useState('');
-  const destinationDebounce = useDebounce(destinationAirportInput);
 
   const [isValidData, setIsValidData] = useState(false);
   const [startingDate, setStartingDate] = useState<Dayjs | null>(null);
   const [returnDate, setReturnDate] = useState<Dayjs | null>(null);
 
-  const onReturnChange = (newDate: any) => {
-    if (startingDate === null) {
-      // If the return date isn't set we can set to any date we would like but, after today's date.
-      if (dayjs().add(1, 'day').isBefore(dayjs(newDate)))
-        setReturnDate(newDate);
-    } else {
-      if (startingDate.isAfter(newDate))
-        return;
-      setReturnDate(dayjs(newDate));
-    }
-  }
+  // Will becomming soon.
+  // const onReturnChange = (newDate: any) => {
+  //   if (startingDate === null) {
+  //     // If the return date isn't set we can set to any date we would like but, after today's date.
+  //     if (dayjs().add(1, 'day').isBefore(dayjs(newDate)))
+  //       setReturnDate(newDate);
+  //   } else {
+  //     if (startingDate.isAfter(newDate))
+  //       return;
+  //     setReturnDate(dayjs(newDate));
+  //   }
+  // }
 
   const onStartChange = (newDate: any) => {
     setStartingDate(dayjs(newDate));
@@ -52,8 +52,6 @@ export default function Home() {
     return foundAirports.matchedAirports.length === 0 ? [NO_AIRPORTS_FOUND] : foundAirports.matchedAirports.map((matchedAirport) => `${matchedAirport.name}, ${matchedAirport.city} ${matchedAirport.country}`);
   };
 
-  const originSearchQuery = useQuery(['originSearch', originDebounce], () => getAirports(originDebounce));
-  const destinationSearchQuery = useQuery(['destinationSearch', destinationDebounce], () => getAirports(destinationDebounce));
 
   // Listening for a change in either the origin input or the destination input and updating the internal value before debouncing it.
   const handleSearch = (event: React.SyntheticEvent, value: string, reason: string) => {
@@ -77,11 +75,12 @@ export default function Home() {
       <Container component='main'>
 
         <Grid container spacing={5}>
-          <Grid item xs={12} mb={5}>
+          <Grid item xs={12} mb={5} mt={5}>
             <Typography variant='h3' component='h2'>Welcome to {WEBSITE_NAME}! Where do you want to fly?</Typography>
           </Grid>
           <Grid item xs={6}>
-            <Autocomplete
+            <AirportSearchBar onSearchInput={handleSearch} searchAirportInput={originAirportInput} searchId='origin-search' searchLabel='Origin airport' />
+            {/* <Autocomplete
               onInputChange={handleSearch}
               freeSolo
               getOptionDisabled={(option) => option === INITIAL_SEARCH_MESSAGE || option === NO_AIRPORTS_FOUND}
@@ -89,16 +88,18 @@ export default function Home() {
               getOptionLabel={(option) => option}
               renderInput={(params) => <TextField {...params} label='Origin airport' />}
               id='origin-search'
-              filterOptions={(x) => x} />
+              filterOptions={(x) => x} /> */}
           </Grid>
           <Grid item xs={6}>
-            <Autocomplete onInputChange={handleSearch}
+            {/* <Autocomplete onInputChange={handleSearch}
               freeSolo
               options={destinationSearchQuery.data === undefined ? [INITIAL_SEARCH_MESSAGE] : destinationSearchQuery.data}
               getOptionDisabled={(option) => option === INITIAL_SEARCH_MESSAGE}
               renderInput={(params) => <TextField {...params} label='Destination airport' />}
               id='destination-search'
-              filterOptions={(x) => x} />
+              filterOptions={(x) => x} /> */}
+            <AirportSearchBar onSearchInput={handleSearch} searchAirportInput={destinationAirportInput} searchId='destination-search' searchLabel='Destination airport' />
+
           </Grid>
           <Grid item xs={6}>
             <DatePicker label="Starting date" value={startingDate} format='DD/MM/YYYY'
@@ -121,8 +122,8 @@ export default function Home() {
           </Grid>
         </Grid>
         <Box>
-          {isValidData ? <FlightsList origin={originDebounce} destination={destinationDebounce}
-            returnDate={returnDate!} startingDate={startingDate!} /> : null}
+          {/* {isValidData ? <FlightsList origin={originDebounce} destination={destinationDebounce}
+            returnDate={returnDate!} startingDate={startingDate!} /> : null} */}
         </Box>
       </Container>
     </>
