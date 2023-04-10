@@ -7,6 +7,7 @@ import registerRouter from "./routes/registerRoutes";
 import searchRouter from "./routes/flightSearchRoutes";
 import * as dotenv from 'dotenv';
 import profileRouter from "./routes/profileRoutes";
+import airlineAccountRouter from "./routes/airlinesAccountOperationsRoutes";
 dotenv.config();
 const app = express();
 app.use(json());
@@ -18,6 +19,8 @@ app.use(loginRouter);
 app.use(registerRouter);
 app.use(searchRouter);
 app.use(profileRouter);
+app.use(airlineAccountRouter);
+
 
 app.listen(process.env.PORT, async () => {
     console.log('Starting server.');

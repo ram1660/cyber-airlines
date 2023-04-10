@@ -14,6 +14,7 @@ export interface ITicket {
     quantity: number;
     fromAirport: string;
     toAirport: string;
+    departureDate: string;
     departureTime: string;
     arrivalTime: string;
 }
@@ -44,6 +45,7 @@ const ticketsSchema = new Schema<ITicket>({
     toAirport: { type: String, required: true },
     quantity: { type: Number, required: true },
     departureTime: {type: String, required: true},
+    departureDate: { type: String, required: true},
     arrivalTime: {type: String, required: true}
 });
 
