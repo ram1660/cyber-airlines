@@ -36,7 +36,7 @@ airlineAccountRouter.post('/create/flight', authenticateAirlineToken, async (req
     }
     // Creates the new flight.
     await postNewFlight(creationRequest);
-    res.json(message: 'OK');
+    res.json({message: 'OK'});
 });
 
 export default airlineAccountRouter
