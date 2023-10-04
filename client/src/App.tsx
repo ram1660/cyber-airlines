@@ -18,6 +18,7 @@ import { setAirlineUser, setCustomerUser } from './features/userSlice';
 import LogoutScreen from './components/Pages/registersAndLogins/LogoutScreen';
 import { useEffect } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import CustomerProfile from './components/Pages/CustomerProfile';
 
 function App() {
 
@@ -61,7 +62,8 @@ function App() {
           </Route>
           <Route path='/' element={<Home />} />
           <Route path='/home' element={<Home />} />
-          <Route path='/airline/profile/:airlineName' element={<AirlineProfile />} />
+          <Route path='/customer/profile' element={<CustomerProfile />} />
+          <Route path='/airline/profile/' element={<AirlineProfile />} />
           <Route path='/logout' element={<LogoutScreen />} />
           <Route path='*' element={<PageNotFound />} />
         </Routes>

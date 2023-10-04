@@ -1,6 +1,7 @@
 import express from "express";
 import { getCustomerProfile, getAirlineProfile } from "../db/profiles";
 import { authenticateCustomerToken } from "../middleware/auth";
+import Response from "../app";
 
 
 const profileRouter = express.Router();
@@ -16,9 +17,13 @@ profileRouter.get('/public/airline/profile', async (req, res) => {
 });
 
 profileRouter.get('/profile/customer', authenticateCustomerToken, async (req, res) => {
-    const username: string = req.body['username'];
+    const username: string = req.query.username as string;  
     const customerProfile = await getCustomerProfile(username);
-    res.json(customerProfile);
+    const response: Response = {
+        code: 200,
+        message: customerProfile 
+    }
+    res.json(response);
 });
 
 export default profileRouter;

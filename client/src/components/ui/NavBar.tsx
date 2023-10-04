@@ -33,10 +33,11 @@ export default function NavBar() {
     // Nav bar options.
     const profileSettings: ProfileDropBox[] = [];
     if (authSelector === true) {
-        profileSettings.push({ description: 'Profile', url: '/profile' });
         if (userSelector === 'AIRLINE') {
+            profileSettings.push({ description: 'Profile', url: '/profile/airline'})
             profileSettings.push({ description: 'Edit Flights', url: '/edit/flights' });
         } else {
+            profileSettings.push({ description: 'Profile', url: '/customer/profile'})
             profileSettings.push({ description: 'My orders', url: '/orders' });
         }
         profileSettings.push({ description: 'Logout', url: '/logout' });

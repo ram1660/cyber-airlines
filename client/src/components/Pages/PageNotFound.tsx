@@ -1,11 +1,14 @@
-import React from 'react'
+import { Container, CssBaseline } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 export default function PageNotFound() {
-    const redirect = useNavigate();
-    setTimeout(() => {
-        redirect('/home');
-    }, 5000);
+  const redirect = useNavigate();
+  setTimeout(() => {
+    redirect('/home');
+  }, 5000);
   return (
-    <div>Oops this page doesn't exists</div>
+    <>
+      <CssBaseline />
+      <Container>Oops this page doesn't exists</Container>
+    </>
   )
 }

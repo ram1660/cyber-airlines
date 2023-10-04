@@ -12,23 +12,23 @@ const communicator = axios.create({
 });
 
 export async function getAirlineProfile(airlineName: string): Promise<AirlineData> {
-    const response = await (await communicator.get('/public/airline/profile?name=' + airlineName)).data;    
+    const response = await (await communicator.get('/public/airline/profile?name=' + airlineName)).data;
     return response;
 }
 
 export async function registerCustomer(form: CustomerRegisterForm): Promise<Response> {
     const response = await communicator.post('/register/customer', form);
-    return { code: response.status, message: await response.data};
+    return { code: response.status, message: await response.data };
 }
 
 export async function registerAirline(form: AirlineRegisterForm): Promise<Response> {
     const response = await communicator.post('/register/airline', form);
-    return { code: response.status, message: await response.data};
+    return { code: response.status, message: await response.data };
 }
 
 export async function signIn(form: SignInForm): Promise<Response> {
     const response = await communicator.post('/login', form);
-    return { code: response.status, message: await response.data};
+    return { code: response.status, message: await response.data };
 }
 
 export async function findAirports(searchTerm: string): Promise<SearchAirportsResponse> {
@@ -45,3 +45,9 @@ export async function validateToken(userIdentity: ValidateCredentials): Promise<
     const isValid: boolean = await (await communicator.post('/api/validate', userIdentity)).data['isValid'];
     return isValid;
 }
+
+export async function getCustomerProfile(customerUsername: string, jwtToken: string): Promise<Response> {
+    const response = await (await communicator.get(`/profile/customer?username=${customerUsername}`,
+        { headers: { 'Authorization': 'Bearer ' + jwtToken } })).data as Response;   
+    return response;
+}  

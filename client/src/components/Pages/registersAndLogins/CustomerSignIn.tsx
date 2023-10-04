@@ -37,8 +37,8 @@ export default function CustomerSignIn() {
   });
   
   const loginMutation = useMutation(signInCustomer, {
-    onSuccess: (data, variables, context) => {
-      const identity = data.message as any;
+    onSuccess: (data: any, variables, context) => {
+      const identity = data.message;
       identity['type'] = 'CUSTOMER';
       localStorage.setItem('token', JSON.stringify(identity));
       dispatch(signedIn());

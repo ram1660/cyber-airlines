@@ -14,7 +14,7 @@ export async function getCustomerProfile(customerUsername: string): Promise<Cust
     const customerModel = await Customer.findOne({ 'username': customerUsername });
     const customerProfile: CustomerProfile = {
         firstName: customerModel?.firstName!,
-        lastName: customerModel?.lastName!
+        lastName: customerModel?.lastName!,
     };
     return customerProfile;
 }

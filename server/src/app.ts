@@ -8,6 +8,12 @@ import searchRouter from "./routes/flightSearchRoutes";
 import * as dotenv from 'dotenv';
 import profileRouter from "./routes/profileRoutes";
 import airlineAccountRouter from "./routes/airlinesAccountOperationsRoutes";
+
+export default interface Response {
+    message: string | any;
+    code: number;
+};
+
 dotenv.config();
 const app = express();
 app.use(json());
@@ -25,7 +31,7 @@ app.use(airlineAccountRouter);
 app.listen(process.env.PORT, async () => {
     console.log('Starting server.');
     console.log('Reading dotEnv file...');
-    console.log('Grabing checking tokens existens..');
+    console.log('Grabbing checking tokens existents..');
     if (process.env['CUSTOMER_TOKEN_SECRET'] === undefined ) {
         throw Error('No customer token. Please add the key "CUSTOMER_TOKEN_SECRET" with any value you would like to the .env file.');
     }
