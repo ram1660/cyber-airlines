@@ -1,9 +1,9 @@
-import { Avatar, CssBaseline, Skeleton, Typography } from '@mui/material';
 import AirlinesIcon from '@mui/icons-material/Airlines';
+import { Avatar, CssBaseline, Skeleton, Typography } from '@mui/material';
 import { Container } from '@mui/system';
-import { getAirlineProfile } from '../../apiCommunicator';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { getAirlineProfile } from '../../apiCommunication/airlineAPI';
 
 export interface AirlineData {
   airlineName: string;

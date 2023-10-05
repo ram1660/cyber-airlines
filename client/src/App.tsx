@@ -10,7 +10,7 @@ import AirLineSignUp from './components/Pages/registersAndLogins/AirlineSignUp';
 import AirlinesSignIn from './components/Pages/registersAndLogins/AirlineSignIn';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useQuery } from '@tanstack/react-query';
-import { validateToken } from './apiCommunicator';
+import { validateToken } from './apiCommunication/apiCommunicator';
 import { useDispatch } from 'react-redux';
 import { signedIn } from './features/authenticateSlice';
 import { ValidateCredentials } from './interfaces/loginForm';

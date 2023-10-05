@@ -2,7 +2,7 @@ import { Container, CssBaseline, Icon, SvgIcon, Typography } from '@mui/material
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
 import { useQuery } from '@tanstack/react-query'
 import IProfile from '../../interfaces/Profile'
-import { getCustomerProfile } from '../../apiCommunicator'
+import { getCustomerProfile } from '../../apiCommunication/apiCommunicator'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 interface ProfileData extends IProfile {
 

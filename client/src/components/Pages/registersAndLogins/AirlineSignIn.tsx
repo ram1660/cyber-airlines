@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { signIn } from '../../../apiCommunicator';
+import { signIn } from '../../../apiCommunication/apiCommunicator';
 import { selectAuth, signedIn } from '../../../features/authenticateSlice';
 import { SignInForm } from '../../../interfaces/loginForm';
 import { useMutation } from '@tanstack/react-query';

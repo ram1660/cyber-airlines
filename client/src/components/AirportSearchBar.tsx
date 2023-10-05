@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useDebounce from "../hooks/useDebounce";
-import { findAirports } from "../apiCommunicator";
+import { findAirports } from "../apiCommunication/apiCommunicator";
 import { Autocomplete, TextField } from "@mui/material";
 
 interface SearchBarProps {
     searchId: string;
     searchLabel: string;
     searchAirportInput: string;
-    onSearchInput: (event: React.SyntheticEvent, value: string, reason: string) => void;
+    onSearchInput?: (event: React.SyntheticEvent, value: string, reason: string) => void;
 }
 
 const INITIAL_SEARCH_MESSAGE = 'Start typing to find an airport!';

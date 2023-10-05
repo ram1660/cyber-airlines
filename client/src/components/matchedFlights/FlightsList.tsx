@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { findFlights } from '../../apiCommunicator';
+import { findFlights } from '../../apiCommunication/apiCommunicator';
 import { FlightDetails } from '../../interfaces/AvailableFlights';
 import dayjs from 'dayjs';
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';

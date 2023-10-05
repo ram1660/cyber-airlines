@@ -12,7 +12,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { registerCustomer } from '../../../apiCommunicator';
+import { registerCustomer } from '../../../apiCommunication/apiCommunicator';
 import { CustomerRegisterForm } from '../../../interfaces/registerForms';
 import Response from '../../../interfaces/response';
 import { useSelector } from 'react-redux';
