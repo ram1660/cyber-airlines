@@ -31,8 +31,8 @@ export default function Home() {
   //   }
   // }
 
-  const onStartChange = (newDate: any) => {
-    setStartingDate(dayjs(newDate));
+  const onStartChange = (newDate: Dayjs | null) => {
+    setStartingDate(newDate);
   }
 
   // Listening for a change in either the origin input or the destination input and updating the internal value before debouncing it.
