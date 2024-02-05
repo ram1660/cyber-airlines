@@ -31,4 +31,8 @@ export async function getCustomerProfile(customerUsername: string, jwtToken: str
         { headers: { 'Authorization': 'Bearer ' + jwtToken } })).data as Response;   
     return response;
 }
-export const sharedAPI = import {* as shed} from './apiCommunicator';
+
+export async function lookForFlights(sourceAirport: string, destinationAirport: string, departureTime: Date): Promise<FlightDetailsResponse> {
+    const response = (await communicator.get(`/search/flights?source=${sourceAirport}&destination=${destinationAirport}&departureTime=${departureTime}`));
+    return response.data as FlightDetailsResponse;
+}
