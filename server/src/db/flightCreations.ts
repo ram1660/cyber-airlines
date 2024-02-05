@@ -17,7 +17,7 @@ export async function postNewFlight(requestedFlightCreation: CreateFlightRequest
 // There are no conflicts between them.
 // If the return is null then everything is good to go else return the conflicted flight.
 export async function isFlightExists(target: CreateFlightRequest): Promise<ConflictedFlight | null> {
-    const conflictedFlightDocument = await Ticket.findOne({ fromAirport: target.fromAirport, departureDate: target.departureDate, departureTime: target.departureTime });
+    const conflictedFlightDocument = await Ticket.findOne({ fromAirport: { $eq: target.fromAirport }, departureDate: { $eq: target.departureDate }, departureTime: { $eq: target.departureTime } });
     if (conflictedFlightDocument === null) return null;
     const conflictedFlightFinal: ConflictedFlight = {
         departureDate: conflictedFlightDocument.departureDate,
