@@ -6,6 +6,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { WEBSITE_NAME } from '../../globals'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import AirportSearchBar from '../AirportSearchBar';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { lookForFlights } from '../../apiCommunication/apiCommunicator';
 
 export default function Home() {
 
@@ -13,11 +15,15 @@ export default function Home() {
   const [originAirportInput, setOriginAirportInput] = useState('');
 
   const [destinationAirportInput, setDestinationAirportInput] = useState('');
-
+  
   const [isValidData, setIsValidData] = useState(false);
-  const [startingDate, setStartingDate] = useState<Dayjs | null>(null);
-  const [returnDate, setReturnDate] = useState<Dayjs | null>(null);
-
+  const [startingDate, setStartingDate] = useState<Dayjs>(dayjs());
+  // const [returnDate, setReturnDate] = useState<Dayjs | null>(null);
+  
+  const handleSearchRequest = async () => {
+    const searchResults = await lookForFlights(originAirportInput, destinationAirportInput, startingDate.toDate());
+  }
+  const {isLoading, isError, data} = useMutation(['flightSearchQuery'], handleSearchRequest);
   // Will becomming soon.
   // const onReturnChange = (newDate: any) => {
   //   if (startingDate === null) {
@@ -32,11 +38,13 @@ export default function Home() {
   // }
 
   const onStartChange = (newDate: Dayjs | null) => {
-    setStartingDate(newDate);
+    setStartingDate(newDate === null ? dayjs() : newDate);
   }
 
+
+
   // Listening for a change in either the origin input or the destination input and updating the internal value before debouncing it.
-  const handleSearch = (event: React.SyntheticEvent, value: string, reason: string) => {
+  const handleFlightFields = (event: React.SyntheticEvent, value: string, reason: string) => {
     if (event.currentTarget.id === 'origin-search') {
       if (value !== '') {
         setOriginAirportInput(value);
@@ -54,6 +62,7 @@ export default function Home() {
     // 3. If there are no matched flights set the matchedFlights state (Haven't created yet),
     // In which result of producing to the user a "No flights have been found.".
     // 4. If there are pass to the FlightsList component to list from the API call through the state.
+    
   };
   return (
     <>
@@ -64,10 +73,10 @@ export default function Home() {
             <Typography variant='h3' component='h2'>Welcome to {WEBSITE_NAME}! Where do you want to fly?</Typography>
           </Grid>
           <Grid item xs={6}>
-            <AirportSearchBar onSearchInput={handleSearch} searchAirportInput={originAirportInput} searchId='origin-search' searchLabel='Origin airport' />
+            <AirportSearchBar onSearchInput={handleFlightFields} searchAirportInput={originAirportInput} searchId='origin-search' searchLabel='Origin airport' />
           </Grid>
           <Grid item xs={6}>
-            <AirportSearchBar onSearchInput={handleSearch} searchAirportInput={destinationAirportInput} searchId='destination-search' searchLabel='Destination airport' />
+            <AirportSearchBar onSearchInput={handleFlightFields} searchAirportInput={destinationAirportInput} searchId='destination-search' searchLabel='Destination airport' />
 
           </Grid>
           <Grid item xs={6}>

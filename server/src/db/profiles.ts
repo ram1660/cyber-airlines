@@ -21,7 +21,10 @@ export async function getCustomerProfile(customerUsername: string): Promise<Cust
 
 export async function getAirlineProfile(airlineName: string): Promise<AirlineProfile> {
     if ((await Airline.exists({ airlineName: { $eq: airlineName } })) === null) {
-        throw new Error('Airline not found');
+        return {
+            airlineName: "Not Found",
+            availableFlights: -1
+        };
     }
     const airlineTickets = await Ticket.find().where('airlineOperator').equals(airlineName).count().exec();
     const airlineProfile: AirlineProfile = {

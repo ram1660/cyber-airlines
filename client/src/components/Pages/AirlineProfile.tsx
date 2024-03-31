@@ -14,8 +14,6 @@ export default function AirlineProfile() {
   const navigator = useNavigate();
   const getProfile = async () => {
     const airlineName = window.location.href.split('/').at(-1)!;
-    console.log(airlineName);
-
     return await getAirlineProfile(airlineName);
   };
   const { isLoading, isError, data } = useQuery(['profile'], getProfile);

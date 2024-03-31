@@ -45,5 +45,6 @@ export async function addRefreshToken(token: string): Promise<void> {
 }
 
 export async function revokeAccess(token: string): Promise<void> {
-    await RefreshToken.deleteOne({ $eq: token });
+    if (typeof token === 'string')
+        await RefreshToken.deleteOne({ $eq: token });
 }
